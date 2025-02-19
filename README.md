@@ -4,32 +4,42 @@
 
 ## Problem Statement
 
-*Problem Statement ID – xxxxx*
+*Problem Statement ID – PY009*
 
 Formulate your problem statement clearly and concisely.
 
 ---
 
 ## Overview
+*Overview*
 
-Provide an overview of the project, its purpose, and what it aims to achieve along with proposed solution
+The Local Marketplace for Farmers is a web-based platform that enables farmers to list their produce and sell directly to consumers, eliminating intermediaries and ensuring better pricing. The platform includes features such as product listing, real-time chat, secure payments, and order tracking to enhance the experience for both farmers and buyers.
+
+---
+
+*Proposed Solution*
+
+-For Farmers: Easy product listing, fair pricing, direct consumer interactions, and secured payments.
+
+-For Consumers: Access to fresh farm produce, competitive pricing, and the ability to connect directly with farmers.
+
+-For Admins: Platform management, user verification, and analytics dashboard.
 
 ---
 
 ## Team Members
 
-*Team ID – xxxxx*
+*Team ID – T043*
 
 List your team members along with their roles.
 
-- *Member 1* - Team Leader
-- *Member 2* - Role
-- *Member 3* - Role
-- *Member 4* - Role
-- *Member 5* - Role
-- *Member 6* - Role
-- *Member 7* - Role
-- *Member 8* - Role
+- *NaveenKumar G* - Team Leader
+- *Shakthi G* - Role
+- *Yashwini Choudhary B* - Role
+- *Nisha M* - Role
+- *Omar Farroq S H* - Role
+- *Naresh Kalyan S M * - Role
+
 
 ![Team Photo](media/team-photo.png)
 
@@ -39,10 +49,10 @@ List your team members along with their roles.
 
 List the technologies and tools used in the project. For example:
 
-- *Frontend:* HTML, CSS, JavaScript, ReactJS
-- *Backend:* Flask, Django
-- *Database:* MongoDB, MySQL
-- *Other Tools:* Docker, Git, TensorFlow
+- *Frontend:* HTML, CSS, Bootstrap 
+- *Backend:* Django
+- *Database:* MySQL
+- *Other Tools:* Git
 
 ---
 
@@ -56,7 +66,7 @@ Follow these steps to clone and run the application locally.
 2. Install [Git](https://git-scm.com/).
 3. Clone this repository:
    bash
-   git clone https://github.com/username/repository-name.git
+   git [clone https://github.com/username/repository-name.git](https://github.com/PYEXPO25/T043_CODECRAFTERS.git)
    
 
 ### Installation
@@ -91,9 +101,9 @@ Follow these steps to clone and run the application locally.
 
 ## Start the Application
 
-1. Run the Flask application:
+1. Run the Django application:
    bash
-   flask run
+   python manage.py runserver
    
 2. Open your browser and navigate to:
    
