@@ -40,7 +40,7 @@ List your team members along with their roles.
 - *Naresh Kalyan S M* - Team member
 
 
-![Team Photo](media/team-photo.png)
+![Team Photo](media/team-photo.jpg)
 
 ---
 
