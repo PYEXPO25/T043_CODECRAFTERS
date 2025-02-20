@@ -11,13 +11,12 @@ Formulate your problem statement clearly and concisely.
 ---
 
 ## Overview
-*Overview*
 
 The Local Marketplace for Farmers is a web-based platform that enables farmers to list their produce and sell directly to consumers, eliminating intermediaries and ensuring better pricing. The platform includes features such as product listing, real-time chat, secure payments, and order tracking to enhance the experience for both farmers and buyers.
 
 ---
 
-*Proposed Solution*
+## Proposed Solution
 
 -For Farmers: Easy product listing, fair pricing, direct consumer interactions, and secured payments.
 
@@ -34,11 +33,11 @@ The Local Marketplace for Farmers is a web-based platform that enables farmers t
 List your team members along with their roles.
 
 - *NaveenKumar G* - Team Leader
-- *Shakthi G* - Role
-- *Yashwini Choudhary B* - Role
-- *Nisha M* - Role
-- *Omar Farroq S H* - Role
-- *Naresh Kalyan S M * - Role
+- *Shakthi G* - Team member
+- *Yashwini Choudhary B* - Team member
+- *Nisha M* - Team member
+- *Omar Farroq S H* - Team member
+- *Naresh Kalyan S M* - Team member
 
 
 ![Team Photo](media/team-photo.png)
