@@ -19,6 +19,23 @@ class ShopImage(models.Model):  # Renamed ShopImages → ShopImage (singular)
 
     def __str__(self):
         return f"Image for {self.shop.shop_name}"
+    
+class Vegetables(models.Model):
+    vegetables = [
+        ''
+    ]
+    product_name = models.CharField(max_length=50)
+    image = models.URLField(null=True)
+
+
+class temp_user(models.Model):
+    username = models.CharField(max_length=50)
+    email = models.TextField()
+    contact_number = models.CharField(max_length=10)
+
+
+    
+
 
 
 
