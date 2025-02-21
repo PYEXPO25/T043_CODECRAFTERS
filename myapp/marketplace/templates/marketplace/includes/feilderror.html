@@ -1,0 +1,5 @@
+{% if form.{{error_feild}}.errors %}
+    {% for error in form.username.errors %}
+        <span class="text-danger">{{error}}</span>
+    {% endfor %}
+{% endif %}

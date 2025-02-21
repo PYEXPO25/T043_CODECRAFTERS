@@ -2,48 +2,70 @@
 
 
 {% block content %}
-  <body>
+  
     <div class="container p-4" id="regform">
       <h1>Register</h1>
       <form action="" method="POST">
+        {% csrf_token %}
         <div class="form-group">
           <label class="form-label" for="name">Enter your name</label>
+          {% if form.name.errors %}
+            {% for error in form.name.errors %}
+              <span class="text-danger">{{error}}</span>
+            {% endfor %}
+          {% endif %}
           <input
             class="form-control"
             type="text"
             id="name"
             name="name"
-            
+            value="{{form.name.value|default:""}}"
           />
+
         </div>
         <div class="form-group">
-            <label class="form-label" for="name">Enter your name</label>
+            <label class="form-label" for="username">Enter your User name</label>
+            {% if form.username.errors %}
+            {% for error in form.username.errors %}
+              <span class="text-danger">{{error}}</span>
+            {% endfor %}
+          {% endif %}
             <input
               class="form-control"
               type="text"
-              id="name"
+              id="username"
               name="username"
-              
+              value="{{form.username.value|default:""}}"
             />
         </div>
         <div class="form-group">
           <label class="form-label" for="contact">Enter your contact</label>
+          {% if form.contact_number.errors %}
+            {% for error in form.contact_number.errors %}
+              <span class="text-danger">{{error}}</span>
+            {% endfor %}
+          {% endif %}
           <input
             class="form-control"
             type="tel"
             id="contact"
-            name="contact"
-            
+            name="contact_number"
+            value="{{form.contact_number.value |default:" "}}"
           />
         </div>
         <div class="form-group">
           <label class="form-label" for="email">Enter your Email</label>
+          {% if form.email.errors %}
+            {% for error in form.email.errors %}
+              <span class="text-danger">{{error}}</span>
+            {% endfor %}
+          {% endif %}
           <input
             class="form-control"
             type="email"
             id="email"
             name="email"
-            
+            value="{{form.email.value|default:""}}"
           />
         </div>
         <div class="text-center">
@@ -53,7 +75,8 @@
         </div>
       </form>
     </div>
-  </body>
+    {% include "marketplace/includes/messages.html" %}
+  
 </html>
 
 {% endblock content %}

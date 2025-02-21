@@ -1,15 +1,17 @@
 from django.shortcuts import render,redirect, get_object_or_404
 from django.http.response import HttpResponse
-from . forms import RegisterForm
-from django.utils.http import urlsafe_base64_encode,urlsafe_base64_decode
+from . forms import RegisterForm,SetPasswordForm
+
 from django.core.mail import send_mail
-from django.utils.encoding import force_bytes
+from django.contrib.auth.hashers import make_password
 from django.contrib.sites.shortcuts import get_current_site
-from django.contrib.auth.tokens import default_token_generator
+
 from django.template.loader import render_to_string
 from django.contrib import messages
 from .models import temp_user
 from django.contrib.auth.models import User
+import uuid
+from django.urls import reverse
 
 # Create your views here.
 
@@ -23,45 +25,69 @@ def login(request):
 def log_out(request):
     pass
 
+
+
 def register(request):
     form = RegisterForm()
     if request.method == 'POST':
         form = RegisterForm(request.POST)
         if form.is_valid():
-            
             try:
-                email = request.POST['email']
-                name = request.POST['name']
                 
-                subject = "Password Change request"
+                email = form.cleaned_data['email']
+                
+                name = form.cleaned_data['name']
+                username = form.cleaned_data['username']
+                
+                token = str(uuid.uuid4())  # Generate a unique token
+                user = temp_user.objects.create(email=email, name=name, token=token,username = username)
+                
+                
+                subject = "Password Change Request"
                 current_site = get_current_site(request)
-                token = request.POST['token']
                 domain = current_site.domain
                 
-                message = render_to_string("blog/email.html",{"domain":domain,'token':token,"name":name})
+                message = render_to_string("marketplace/verifyemail.html", {
+                    "domain": domain,
+                    "token": user.token,
+                    "name": name
+                })
                 
-                send_mail(subject,message,"noreply@zoro.com",[email])
-                messages.success(request,"Verification Email has been sent your mail")
+                print(message)
+                send_mail(subject, message, "noreply@zoro.com", [email], fail_silently=False)
+                messages.success(request, "Verification Email has been sent to your mail")
+                
+                return redirect('marketplace:register')  # Redirect to avoid resubmission
             except Exception as e:
-                messages.warning(request,"No email exist")
+                print(e)
+                messages.warning(request, "Something went wrong. Try again.")
+    
+    return render(request, 'marketplace/register.html', {'form': form})
 
-    return render(request,'marketplace/register.html')
 
 def set_password(request, token):
-    temp_user = get_object_or_404(temp_user, token=token)
-
+    Temp_user = get_object_or_404(temp_user, token=token)
+    form = SetPasswordForm()
     if request.method == 'POST':
-        password = request.POST['password']
-        
-        user = User.objects.create(
-            username=temp_user.username,
-            email=temp_user.email,
-            first_name=temp_user.full_name,
-            password=set_password(password)
-        )
-        
-        temp_user.delete()  
-        
-        return redirect(reverse('blog:login')) 
+        form = SetPasswordForm(request.POST)
+        print("Here out")
+        if form.is_valid():
+            print("Here")
+            password = form.cleaned_data['password']
+            print(password)
+            user = User.objects.create(
+                username=Temp_user.username,
+                email=Temp_user.email,
+                first_name=Temp_user.name,
+                password=make_password(password)
+            )
+            
+            Temp_user.delete()  
+            
+            return redirect(reverse('marketplace:login')) 
 
-    return render(request, 'set_password.html', {'email': temp_user.email})
+    return render(request, 'marketplace/set_password.html', {'email': temp_user.email})
+
+
+def login(request):
+    return HttpResponse("Login page")
