@@ -1,0 +1,12 @@
+
+{% autoescape off %}
+
+ Hello {{name}}, 
+
+    This email is to redirect you to the password page.
+
+redirect url :
+
+    http://{{domain}}{% url "blog:setpassword"  token=token%}
+    
+{% endautoescape %}
