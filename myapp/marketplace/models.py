@@ -5,16 +5,12 @@ import uuid
 
 class District(models.Model):
     name = models.CharField(max_length=50)
-
     def __str__(self):
         return self.name
     
-class ShopImage(models.Model):  # Renamed ShopImages → ShopImage (singular)
-    shop = models.ForeignKey(Shop, on_delete=models.CASCADE, related_name="images")
-    image = models.ImageField(null=False,upload_to='/shop')
 
-    def __str__(self):
-        return f"Image for {self.shop.shop_name}"
+class ShopImage(models.Model):  
+    image = models.ImageField(null=False,upload_to='shop/')
 
 class Shop(models.Model):
     shop_name = models.CharField(max_length=50)
@@ -26,12 +22,11 @@ class Shop(models.Model):
         return self.shop_name
 
 
-
     
     
 class Vegetables(models.Model):
     vegetable = models.CharField(max_length=50)
-    images = models.ImageField(null=True,upload_to="/vegetables")
+    images = models.ImageField(null=True,upload_to="vegetables/")
 
     def __str__(self):
         return self.vegetable
