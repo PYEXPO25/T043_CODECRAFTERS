@@ -25,7 +25,7 @@ def log_out(request):
 
 def register(request):
     form = RegisterForm()
-    if form.method == 'POST':
+    if request.method == 'POST':
         form = RegisterForm(request.POST)
         if form.is_valid():
             
@@ -44,6 +44,8 @@ def register(request):
                 messages.success(request,"Verification Email has been sent your mail")
             except Exception as e:
                 messages.warning(request,"No email exist")
+
+    return render(request,'marketplace/register.html')
 
 def set_password(request, token):
     temp_user = get_object_or_404(temp_user, token=token)
