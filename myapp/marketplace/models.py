@@ -8,6 +8,11 @@ class District(models.Model):
     def __str__(self):
         return self.name
     
+class Rating(models.Model):
+    rating = models.IntegerField(max_length=5)
+    def __str__(self):
+        return self.rating
+
 
 class ShopImage(models.Model):  
     image = models.ImageField(null=False,upload_to='shop/')
@@ -15,7 +20,7 @@ class ShopImage(models.Model):
 class Shop(models.Model):
     shop_name = models.CharField(max_length=50)
     district = models.ForeignKey(District, on_delete=models.CASCADE)
-    rating = models.FloatField()
+    rating = models.ForeignKey(Rating,on_delete=models.CASCADE)
     image = models.ForeignKey(ShopImage, on_delete=models.CASCADE)
 
     def __str__(self):
