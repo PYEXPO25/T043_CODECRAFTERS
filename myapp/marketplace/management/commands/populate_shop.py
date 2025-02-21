@@ -1,38 +1,40 @@
 from marketplace.models import Shop
 from typing import Any
 from django.core.management.base import BaseCommand
+from django.contrib.auth.models import User
+from marketplace.models import District
+import random
 class Command(BaseCommand):
 
     def handle(self, *args, **options):
         Shop.objects.all().delete()
-        vegetables = [
-    "Potato", "Okra", "Brinjal", "Carrot", "Cauliflower", "Bottle Gourd",
-    "Ridge Gourd", "Turnip", "Radish", "Tomato", "Bell Pepper", "Beetroot",
-    "Ginger", "Garlic", "Onion", "Raw Mango", "Ash Gourd", "Taro Root",
-    "Pumpkin", "Chickpea", "Coriander Leaves", "Black Cumin", "Chickpea Leaves",
-    "Leafy Greens", "Fennel", "Drumstick", "Indian Spinach", "Kidney Beans",
-    "Corn", "Indian Cucumber", "Indian Berry", "Cucumber-like Vegetable",
-    "Dried Fenugreek Leaves", "Cluster Beans", "Raw Banana",
-    "Bitter Gourd-like Vegetable", "Fenugreek Seeds"
+        shops = [
+    "Fresh Harvest",
+    "Green Basket",
+    "Nature’s Bounty",
+    "Organic Haven",
+    "The Veggie Spot",
+    "Fruit Fiesta",
+    "Farm Fresh",
+    "Crisp & Juicy",
+    "Purely Natural",
+    "Bloom Grocers",
+    "Garden Goodies",
+    "Roots & Shoots",
+    "Sunny Orchard",
+    "Berry Bliss",
+    "Citrus Delights",
+    "Tropical Treats",
+    "Healthy Harvest",
+    "The Green Cart",
+    "Nutri Picks",
+    "Farm to Fork"
 ]
-
-        vegetable_images = [
-    "vegetables/potato.jpeg", "vegetables/okra.jpeg", "vegetables/brinjal.jpeg",
-    "vegetables/carrot.jpeg", "vegetables/cauliflower.jpg", "vegetables/Bottle-gourd-.jpg",
-    "vegetables/ridge_gourd.webp", "vegetables/turnip.jpg", "vegetables/radish.jpeg",
-    "vegetables/tomato.webp", "vegetables/bell_pepper.jpeg", "vegetables/beetroot.jpeg",
-    "vegetables/ginger.jpg", "vegetables/garlic.jpg", "vegetables/onion.jpeg",
-    "vegetables/raw_mango.jpeg", "vegetables/ash_gourd.jpeg", "vegetables/taro_root.jpg",
-    "vegetables/pumpkins.jpg", "vegetables/chickpea.jpeg", "vegetables/coriander_leaves_zWMZP6c.jpeg",
-    "vegetables/cumin-seeds.webp", "vegetables/chickpea_leaves_zoW6sMG.jpg", "vegetables/green_vegetables.jpeg",
-    "vegetables/Fennel.jpg", "vegetables/Drumstick.jpg", "vegetables/spinach.jpeg",
-    "vegetables/kidney_beans.jpg", "vegetables/corn.webp", "vegetables/indian_cucumber.jpg",
-    "vegetables/indian_berry.webp", "vegetables/cucumbers.jpg", "vegetables/Dried-Fenugreek-Leaves.jpg",
-    "vegetables/clustter_beans.jpg", "vegetables/raw_banana.jpg", "vegetables/Bitter_gourd.jpeg",
-    "vegetables/Fengureek_seeds.webp"
-]
-
-        for vegetable,image in zip(vegetables,vegetable_images):
-            Vegetables.objects.create(vegetable = vegetable,images = image)
-            
+        image = "https://images.stockcake.com/public/7/b/2/7b208ddd-1125-4d86-b25b-87b124f03469_large/rural-farm-landscape-stockcake.jpg"
+        shop_owners = User.objects.all()
+        districts = District.objects.all()
+        for shop in shops:
+            shop_owner = random.choice(shop_owners)
+            district = random.choice(districts)
+            Shop.objects.create(shop_owner=shop_owner,district=district,image=image,shop_name=shop)
         self.stdout.write(self.style.SUCCESS("Successfully insereted."))

@@ -10,10 +10,7 @@ class District(models.Model):
     def __str__(self):
         return self.name
     
-class Rating(models.Model):
-    rating = models.IntegerField(max_length=5)
-    def __str__(self):
-        return self.rating
+
 
 
 
@@ -22,15 +19,15 @@ class Shop(models.Model):
     shop_owner = models.ForeignKey(User,on_delete=models.CASCADE)
     shop_name = models.CharField(max_length=50)
     district = models.ForeignKey(District, on_delete=models.CASCADE)
-    rating = models.ForeignKey(Rating,on_delete=models.CASCADE)
-    image = models.ImageField(null=True,upload_to='shop/')
+    rating = models.IntegerField(null=True,max_length=5)
+    image = models.ImageField(null=True,upload_to='shop/',max_length=300)
     slug = models.SlugField(unique=True,max_length=100)
 
     def __str__(self):
         return self.shop_name
 
     def save(self,*args, **kwargs):
-        slug = self.shop_name + self.shop_owner__username
+        slug = self.shop_name + self.shop_owner.username
         self.slug = slugify(slug)
         super().save(*args, **kwargs)
     
