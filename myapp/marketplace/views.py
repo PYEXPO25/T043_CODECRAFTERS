@@ -70,7 +70,7 @@ def set_password(request, token):
     form = SetPasswordForm()
     if request.method == 'POST':
         form = SetPasswordForm(request.POST)
-        print("Here out")
+        
         if form.is_valid():
             print("Here")
             password = form.cleaned_data['password']
@@ -90,4 +90,4 @@ def set_password(request, token):
 
 
 def login(request):
-    return HttpResponse("Login page")
+    return render(request,"marketplace/login.html")

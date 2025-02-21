@@ -24,7 +24,7 @@
 
         </div>
         <div class="form-group">
-            <label class="form-label" for="username">Enter your User name</label>
+            <label class="form-label" for="username">Enter your Username</label>
             {% if form.username.errors %}
             {% for error in form.username.errors %}
               <span class="text-danger">{{error}}</span>
@@ -38,7 +38,7 @@
               value="{{form.username.value|default:""}}"
             />
         </div>
-        <div class="form-group">
+        {% comment %} <div class="form-group">
           <label class="form-label" for="contact">Enter your contact</label>
           {% if form.contact_number.errors %}
             {% for error in form.contact_number.errors %}
@@ -52,7 +52,7 @@
             name="contact_number"
             value="{{form.contact_number.value |default:" "}}"
           />
-        </div>
+        </div> {% endcomment %}
         <div class="form-group">
           <label class="form-label" for="email">Enter your Email</label>
           {% if form.email.errors %}
@@ -68,15 +68,21 @@
             value="{{form.email.value|default:""}}"
           />
         </div>
+        {% include "marketplace/includes/nonfeilderrors.html" %}
         <div class="text-center">
+          
           <button class="mt-4 btn btn-success" type="submit" value="Submit">
             Submit
           </button>
         </div>
       </form>
+      
+      {% include "marketplace/includes/messages.html" %}
     </div>
-    {% include "marketplace/includes/messages.html" %}
-  
+    
+    
+    
+    
 </html>
 
 {% endblock content %}
