@@ -8,25 +8,30 @@ class District(models.Model):
 
     def __str__(self):
         return self.name
+    
+class ShopImage(models.Model):  # Renamed ShopImages → ShopImage (singular)
+    shop = models.ForeignKey(Shop, on_delete=models.CASCADE, related_name="images")
+    image = models.ImageField(null=False,upload_to='/shop')
+
+    def __str__(self):
+        return f"Image for {self.shop.shop_name}"
 
 class Shop(models.Model):
     shop_name = models.CharField(max_length=50)
     district = models.ForeignKey(District, on_delete=models.CASCADE)
     rating = models.FloatField()
+    image = models.ForeignKey(ShopImage, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.shop_name
 
-class ShopImage(models.Model):  # Renamed ShopImages → ShopImage (singular)
-    shop = models.ForeignKey(Shop, on_delete=models.CASCADE, related_name="images")
-    image_url = models.URLField(null=False)
 
-    def __str__(self):
-        return f"Image for {self.shop.shop_name}"
+
+    
     
 class Vegetables(models.Model):
     vegetable = models.CharField(max_length=50)
-    images = models.ImageField(null=True)
+    images = models.ImageField(null=True,upload_to="/vegetables")
 
     def __str__(self):
         return self.vegetable
