@@ -10,9 +10,12 @@ class District(models.Model):
     def __str__(self):
         return self.name
     
+class Vegetables(models.Model):
+    vegetable = models.CharField(max_length=50)
+    images = models.ImageField(null=True,upload_to="vegetables/")
 
-
-
+    def __str__(self):
+        return self.vegetable
 
 
 class Shop(models.Model):
@@ -22,6 +25,7 @@ class Shop(models.Model):
     rating = models.IntegerField(null=True,max_length=5)
     image = models.ImageField(null=True,upload_to='shop/',max_length=300)
     slug = models.SlugField(unique=True,max_length=100)
+    vegetables = models.ForeignKey(Vegetables,on_delete=models.CASCADE)
 
     def __str__(self):
         return self.shop_name
@@ -32,12 +36,7 @@ class Shop(models.Model):
         super().save(*args, **kwargs)
     
     
-class Vegetables(models.Model):
-    vegetable = models.CharField(max_length=50)
-    images = models.ImageField(null=True,upload_to="vegetables/")
 
-    def __str__(self):
-        return self.vegetable
 
 class temp_user(models.Model):
     name = models.CharField(max_length=50)
