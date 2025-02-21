@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 import uuid 
 
 
@@ -18,6 +19,7 @@ class ShopImage(models.Model):
     image = models.ImageField(null=False,upload_to='shop/')
 
 class Shop(models.Model):
+    shop_owner = models.ForeignKey(User,on_delete=models.CASCADE)
     shop_name = models.CharField(max_length=50)
     district = models.ForeignKey(District, on_delete=models.CASCADE)
     rating = models.ForeignKey(Rating,on_delete=models.CASCADE)
