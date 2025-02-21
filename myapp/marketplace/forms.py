@@ -1,19 +1,20 @@
 from django import forms
 from django.contrib.auth.models import User
+from django.contrib.auth import authenticate
 
 class RegisterForm(forms.Form):
     username=forms.CharField(label='Username',max_length=20,required=True)
     email=forms.EmailField(label='Email',required=True)
     name = forms.CharField(label="Name",max_length=20,required=True)
-    contact_number=forms.CharField(label='Contact Number',max_length=10,required=True)
+    # contact_number=forms.CharField(label='Contact Number',max_length=10,required=True)
 
     def clean(self):
         cleaned_data = super().clean()
-        users = User.objects.all()
-
-        user = cleaned_data.get('username')
-
-        if user and user in users:
+        
+        username = cleaned_data.get('username')
+        
+        if User.objects.filter(username=username).exists():
+            
             raise forms.ValidationError("Username already exist")
     
 
@@ -21,6 +22,16 @@ class LoginForm(forms.Form):
     username=forms.CharField(label='Username',max_length=20,required=True)
     password=forms.CharField(label='Password',min_length=8,max_length=20,required=True)
 
+    def clean(self):
+        cleaned_data = super().clean()
+        username = cleaned_data.get('username')
+        password = cleaned_data.get('password')
+
+        if username and password:
+            user = authenticate(username=username,password=password)
+
+            if user is None:
+                raise forms.ValidationError("Invalid Username and Password")
 
 class SetPasswordForm(forms.Form):
     password = forms.CharField(min_length=8,max_length=20,required=True)

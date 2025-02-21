@@ -7,5 +7,6 @@ urlpatterns = [
     path('',views.index,name="index"),
     path('register/',views.register,name='register'),
     path('setpassword/<str:token>',views.set_password,name='setpassword'),
-    path('login/',views.login,name="login"),
+    path('login/',views.login_view,name="login"),
+
 ]

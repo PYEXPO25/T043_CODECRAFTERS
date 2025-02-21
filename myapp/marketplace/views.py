@@ -1,7 +1,7 @@
 from django.shortcuts import render,redirect, get_object_or_404
 from django.http.response import HttpResponse
-from . forms import RegisterForm,SetPasswordForm
-
+from . forms import RegisterForm,SetPasswordForm,LoginForm
+from django.contrib.auth import authenticate,login
 from django.core.mail import send_mail
 from django.contrib.auth.hashers import make_password
 from django.contrib.sites.shortcuts import get_current_site
@@ -16,11 +16,10 @@ from django.urls import reverse
 # Create your views here.
 
 def index(request):
-    return HttpResponse("Hello world")
+    return HttpResponse("Index")
 
 
-def login(request):
-    return HttpResponse('Log in')
+
 
 def log_out(request):
     pass
@@ -62,7 +61,7 @@ def register(request):
                 print(e)
                 messages.warning(request, "Something went wrong. Try again.")
     
-    return render(request, 'marketplace/register.html', {'form': form})
+    return render(request, 'marketplace/register.html', {'form': form,'title':'Register'})
 
 
 def set_password(request, token):
@@ -70,7 +69,7 @@ def set_password(request, token):
     form = SetPasswordForm()
     if request.method == 'POST':
         form = SetPasswordForm(request.POST)
-        print("Here out")
+        
         if form.is_valid():
             print("Here")
             password = form.cleaned_data['password']
@@ -86,8 +85,24 @@ def set_password(request, token):
             
             return redirect(reverse('marketplace:login')) 
 
-    return render(request, 'marketplace/set_password.html', {'email': temp_user.email})
+    return render(request, 'marketplace/set_password.html', {'email': temp_user.email,'title':'Set Password'})
 
 
-def login(request):
-    return HttpResponse("Login page")
+def login_view(request):
+    form = LoginForm()
+    if request.method == 'POST':
+        form = LoginForm(request.POST)
+        
+        if form.is_valid():
+            
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password']
+            user = authenticate(username=username,password=password)
+
+            if user is not None:
+                login(request,user)
+                return redirect(reverse("marketplace:index"))
+
+    
+
+    return render(request,"marketplace/login.html",{'title':'Login','form':form,'style':'forms'})
