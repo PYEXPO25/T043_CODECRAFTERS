@@ -6,6 +6,15 @@ class RegisterForm(forms.Form):
     email=forms.EmailField(label='Email',required=True)
     name = forms.CharField(label="Name",max_length=20,required=True)
     contact_number=forms.CharField(label='Contact Number',max_length=10,required=True)
+
+    def clean(self):
+        cleaned_data = super().clean()
+        users = User.objects.all()
+
+        user = cleaned_data.get('username')
+
+        if user and user in users:
+            raise forms.ValidationError("Username already exist")
     
 
 class LoginForm(forms.Form):
