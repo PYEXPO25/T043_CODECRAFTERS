@@ -23,6 +23,7 @@ class ShopImage(models.Model):  # Renamed ShopImages → ShopImage (singular)
     
 class Vegetables(models.Model):
     vegetable = models.CharField(max_length=50)
+    images = models.ImageField(null=True)
 
 class temp_user(models.Model):
     name = models.CharField(max_length=50)
