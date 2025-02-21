@@ -5,10 +5,10 @@ from django.contrib.auth import authenticate,login
 from django.core.mail import send_mail
 from django.contrib.auth.hashers import make_password
 from django.contrib.sites.shortcuts import get_current_site
-
+from django.core.paginator import Paginator
 from django.template.loader import render_to_string
 from django.contrib import messages
-from .models import temp_user
+from .models import Shop, temp_user
 from django.contrib.auth.models import User
 import uuid
 from django.urls import reverse
@@ -16,8 +16,11 @@ from django.urls import reverse
 # Create your views here.
 
 def index(request):
-    return render(request,'marketplace/index.html',{'style':'index','title':'Home Page'})
-
+    shops = Shop.objects.all()
+    paginator = Paginator(shops,3)
+    page_num = request.GET.get("page")
+    page_obj = paginator.get_page(page_num)
+    return render(request,'marketplace/index.html',{'style':'index','title':'Home Page','page_obj':page_obj})
 
 
 

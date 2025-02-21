@@ -38,14 +38,20 @@
     <section class="container my-5">
         <h2 class="text-center mb-4">Featured Farmer Shops</h2>
         <div class="row">
-            {% for post in page_obj %}
+            {% for shop in page_obj %}
                 <div class="col-md-4">
                     <div class="card shadow">
-                        <img src="vegetables/tomato.webp" class="card-img-top" alt="Shop 1">
+                        <img src="{{shop.image}}" class="card-img-top" alt="Shop 1">
                         <div class="card-body">
-                            <h5 class="card-title">Green Farm</h5>
-                            <p class="card-text">District: Punjab</p>
-                            <a href="#" class="btn btn-success">View Shop</a>
+                            <h5 class="card-title">{{shop.name}}</h5>
+                            <p class="card-text d-flex justify-content-between">
+                                <span><strong>District:</strong> {{ shop.district.name }}</span>
+                                <span><strong>Product:</strong> {{ shop.product }}</span>
+                            </p>
+                            <div class="text-center">
+                                <a href="#" class="btn btn-success">View Shop</a>
+                            </div>
+                            
                         </div>
                     </div>
                 </div>
@@ -53,7 +59,7 @@
                 <h2 class="text-center">No shops yet</h2>
             {% endfor %}
     </section>
-
+    {% include "marketplace/includes/pagenation.html" %}
     <!-- Footer -->
     <footer class="bg-dark text-white text-center">
         <p>© 2025 Farmer Bazar | Connecting Farmers & Consumers</p>
