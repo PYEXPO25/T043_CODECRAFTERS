@@ -40,6 +40,9 @@ class Product(models.Model):
     prize_per_kg = models.FloatField()
     shop_name = models.ForeignKey(Shop,on_delete=models.CASCADE)
     category = models.ForeignKey(Vegetables,on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField()
+    description = models.TextField(null=False)
+    
 
     def __str__(self):
         return f"{self.category.vegetables} - {self.prize_per_kg}"
