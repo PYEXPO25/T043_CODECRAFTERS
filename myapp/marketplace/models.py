@@ -1,4 +1,5 @@
 from django.db import models
+import uuid 
 
 class District(models.Model):
     name = models.CharField(max_length=50)
@@ -21,17 +22,14 @@ class ShopImage(models.Model):  # Renamed ShopImages → ShopImage (singular)
         return f"Image for {self.shop.shop_name}"
     
 class Vegetables(models.Model):
-    vegetables = [
-        ''
-    ]
-    product_name = models.CharField(max_length=50)
-    image = models.URLField(null=True)
-
+    vegetable = models.CharField(max_length=50)
 
 class temp_user(models.Model):
+    name = models.CharField(max_length=50)
     username = models.CharField(max_length=50)
     email = models.TextField()
     contact_number = models.CharField(max_length=10)
+    token = models.UUIDField(default=uuid.uuid4, unique=True)
 
 
     
