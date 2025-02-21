@@ -1,10 +1,10 @@
 .rating {
-  display: flex; /* Keep stars in normal left-to-right order */
-  flex-direction: row-reverse; /* Flip order for correct star selection */
+  display: flex; 
+  flex-direction: row-reverse; 
   justify-content: end;
 }
 .rating input {
-  display: none; /* Hide radio buttons */
+  display: none;
 }
 .rating label {
   font-size: 30px;
@@ -13,7 +13,7 @@
   transition: color 0.3s;
 }
 
-/* Click effect - Gold stars stay highlighted from left to right */
+
 .rating input:checked ~ label {
   color: gold;
 }

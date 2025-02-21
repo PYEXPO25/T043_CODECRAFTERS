@@ -16,7 +16,7 @@ from django.urls import reverse
 # Create your views here.
 
 def index(request):
-    return HttpResponse("Index")
+    return render(request,'marketplace/index.html',{'style':'index','title':'Home Page'})
 
 
 
