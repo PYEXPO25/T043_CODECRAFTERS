@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 import uuid 
+from django.utils.text import slugify
 
 
 
@@ -15,20 +16,23 @@ class Rating(models.Model):
         return self.rating
 
 
-class ShopImage(models.Model):  
-    image = models.ImageField(null=False,upload_to='shop/')
+
 
 class Shop(models.Model):
     shop_owner = models.ForeignKey(User,on_delete=models.CASCADE)
     shop_name = models.CharField(max_length=50)
     district = models.ForeignKey(District, on_delete=models.CASCADE)
     rating = models.ForeignKey(Rating,on_delete=models.CASCADE)
-    image = models.ForeignKey(ShopImage, on_delete=models.CASCADE)
+    image = models.ImageField(null=True,upload_to='shop/')
+    slug = models.SlugField(unique=True,max_length=100)
 
     def __str__(self):
         return self.shop_name
 
-
+    def save(self,*args, **kwargs):
+        slug = self.shop_name + self.shop_owner__username
+        self.slug = slugify(slug)
+        super().save(*args, **kwargs)
     
     
 class Vegetables(models.Model):
