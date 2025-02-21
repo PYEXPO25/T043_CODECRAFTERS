@@ -61,7 +61,7 @@ def register(request):
                 print(e)
                 messages.warning(request, "Something went wrong. Try again.")
     
-    return render(request, 'marketplace/register.html', {'form': form,'title':'Register'})
+    return render(request, 'marketplace/register.html', {'form': form,'title':'Register','style':'forms'})
 
 
 def set_password(request, token):
@@ -85,7 +85,7 @@ def set_password(request, token):
             
             return redirect(reverse('marketplace:login')) 
 
-    return render(request, 'marketplace/set_password.html', {'email': temp_user.email,'title':'Set Password'})
+    return render(request, 'marketplace/set_password.html', {'email': temp_user.email,'title':'Set Password','style':'forms'})
 
 
 def login_view(request):
