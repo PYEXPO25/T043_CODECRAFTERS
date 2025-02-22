@@ -25,6 +25,7 @@ class Shop(models.Model):
     rating = models.IntegerField(null=True,max_length=5)
     image = models.ImageField(null=True,upload_to='shop/',max_length=300)
     slug = models.SlugField(unique=True,max_length=100)
+    is_available = models.BooleanField(default=False)
     vegetables = models.ForeignKey(Vegetables,on_delete=models.CASCADE)
 
     def __str__(self):
