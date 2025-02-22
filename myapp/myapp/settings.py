@@ -81,7 +81,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'market_data',
         'USER': 'root',
-        'PASSWORD': 'yashwini',
+        'PASSWORD': 'zoro@1234',
         'HOST': 'localhost',  # Change if using a remote DB
         'PORT': '3306',  # Default MySQL port
         'OPTIONS': {
