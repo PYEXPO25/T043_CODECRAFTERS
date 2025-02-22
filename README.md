@@ -118,23 +118,20 @@ Images to demonstrate the user interface:
 *Example pages:*
 
 1. *Landing Page:*
-   ![Landing Page Mockup](media/LoadingPage.png)
+   ![Landing Page Mockup](media/loading.jpg)
 
 2. *Dashboard:*
    ![Dashboard Mockup](media/DashBoard.png)
 
-3. *Analytics View:*
-   ![Analytics Mockup](media/Analytics.png)
 
----
 
 ## Resources
 
 ### 📄 PowerPoint Presentation
-[Click here to view the PPT](insert-drive-link-here)
+[Click here to view the PPT](https://drive.google.com/file/d/1ihlSqt3uAlQkNSaKuA-AyOmYKyc-0U0b/view?usp=drive_link)
 
 ### 🎥 Project Video
-[Click here to view the project demo video](insert-drive-link-here)
+[Click here to view the project demo video](https://drive.google.com/file/d/1Qu0Pn3lquqGjl2yS6Cp8b9Za5gZU1B7d/view?usp=drive_link)
 
 ### 📹 YouTube Link
 [Watch the project on YouTube](insert-youtube-link-here)
