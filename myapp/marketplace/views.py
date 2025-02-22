@@ -106,6 +106,9 @@ def login_view(request):
                 login(request,user)
                 return redirect(reverse("marketplace:index"))
 
-    
-
     return render(request,"marketplace/login.html",{'title':'Login','form':form,'style':'forms'})
+
+def view_shop(request,slug):
+    shop = Shop.objects.get(slug=slug)
+
+    return render(request,"marketplace/viewshop.html",{'style':'viewshop'})
