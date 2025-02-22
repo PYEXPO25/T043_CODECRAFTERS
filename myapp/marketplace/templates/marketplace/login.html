@@ -4,7 +4,7 @@
 {% block content %}
   
     <div class="container p-4" id="regform">
-      <h1>Register</h1>
+      <h1>Log in</h1>
       <form action="" method="POST">
         {% csrf_token %}
         <div class="form-group">
@@ -37,8 +37,9 @@
             name="password"
             type='password'
           />
-
+          {% include "marketplace/includes/nonfeilderrors.html" %}
         </div>
+        
         <div class="text-center">
           
           <button class="mt-4 btn btn-success" type="submit" value="Submit">

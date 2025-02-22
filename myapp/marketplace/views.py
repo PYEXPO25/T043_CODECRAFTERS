@@ -1,7 +1,7 @@
 from django.shortcuts import render,redirect, get_object_or_404
 from django.http.response import HttpResponse
 from . forms import RegisterForm,SetPasswordForm,LoginForm
-from django.contrib.auth import authenticate,login
+from django.contrib.auth import authenticate,login,logout
 from django.core.mail import send_mail
 from django.contrib.auth.hashers import make_password
 from django.contrib.sites.shortcuts import get_current_site
@@ -21,11 +21,6 @@ def index(request):
     page_num = request.GET.get("page")
     page_obj = paginator.get_page(page_num)
     return render(request,'marketplace/index.html',{'style':'index','title':'Home Page','page_obj':page_obj})
-
-
-
-def log_out(request):
-    pass
 
 
 
@@ -115,3 +110,8 @@ def view_shop(request,slug):
     page_num = request.GET.get("page")
     page_obj = paginator.get_page(page_num)
     return render(request,"marketplace/viewshop.html",{'style':'viewshop','shop':shop,"page_obj":page_obj})
+
+
+def logout_view(request):
+    logout(request)
+    return redirect("blog:index")
