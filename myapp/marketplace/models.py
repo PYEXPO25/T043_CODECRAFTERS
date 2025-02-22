@@ -46,8 +46,6 @@ class Shop(models.Model):
         self.slug = slugify(slug)
         super().save(*args, **kwargs)
     
-    
-
 
 class temp_user(models.Model):
     name = models.CharField(max_length=50)
@@ -63,8 +61,10 @@ class Product(models.Model):
     quantity = models.PositiveIntegerField()
     description = models.TextField(null=False)
     image = models.ImageField(null=True,max_length=300)
+    is_available = models.BooleanField(default=True)
 
     def save(self,*args, **kwargs):
+        self.is_available = self.quantity > 0
         if not self.image:
             self.image = self.category.images  
         super().save(*args, **kwargs)
