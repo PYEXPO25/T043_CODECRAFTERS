@@ -146,3 +146,4 @@ def view_shop(request,slug):
 def logout_view(request):
     logout(request)
     return redirect("blog:index")
+

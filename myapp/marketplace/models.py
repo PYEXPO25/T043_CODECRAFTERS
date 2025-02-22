@@ -81,6 +81,15 @@ class Product(models.Model):
     
     def __str__(self):
         return f"{self.category.vegetables} - {self.prize_per_kg}"
+    
+class Farmer(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    phone = models.CharField(max_length=15, null=True, blank=True)
+    address = models.TextField(null=True, blank=True)
+
+    
+    def __str__(self):
+        return self.user.username
 
     
 
