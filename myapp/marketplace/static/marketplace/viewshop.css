@@ -1,0 +1,27 @@
+.shop-image {
+    max-height: 400px;
+    object-fit: cover;
+    border-radius: 10px;
+    width: 100%;
+}
+.btn-rounded {
+    border-radius: 20px;
+}
+.rating {
+    font-size: 1.2rem;
+    color: #FFD700;
+}
+.product-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border-radius: 15px;
+    overflow: hidden;
+}
+.product-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+.product-img {
+    height: 180px;
+    object-fit: cover;
+    border-radius: 10px 10px 0 0;
+}

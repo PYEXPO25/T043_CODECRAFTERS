@@ -1,21 +1,7 @@
 {% extends "marketplace/includes/base.html" %}
 {% block content %}
-    <nav class="navbar navbar-expand-lg navbar-dark">
-        <div class="container">
-            <a class="navbar-brand" href="#">🌿 Farmer Bazar</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link" href="#">Home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Shops</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Register Shop</a></li>
-                    <li class="nav-item"><a class="nav-link btn btn-light text-success px-3" href="#">Login</a></li>
-                </ul>
-            </div>
-        </div>
-    </nav>
+    
+    {% include "marketplace/includes/navbar.html" %}
 
     <!-- Hero Section -->
     <header class="hero">
@@ -24,7 +10,7 @@
             <p class="fw-semibold fs-4">Fresh & Organic Produce Directly from Farmers</p>
             <div class="container d-flex justify-content-center">
                 <div class="w-75">
-                    <input class="form-control mb-2 rounded-pill p-3" type="search" placeholder="Search for shops..." aria-label="Search">
+                    <input class="form-control mb-2 rounded-pill p-3" type="search" placeholder="Search for shops or product" aria-label="Search">
                     <div class="text-center">
                         <button class="btn btn-success px-4 py-2 rounded-pill" type="submit">Search</button>
                     </div>
@@ -39,30 +25,31 @@
         <h2 class="text-center mb-4">Featured Farmer Shops</h2>
         <div class="row">
             {% for shop in page_obj %}
-                <div class="col-md-4">
-                    <div class="card shadow">
-                        <img src="{{shop.image}}" class="card-img-top" alt="Shop 1">
-                        <div class="card-body">
-                            <h5 class="card-title">{{shop.name}}</h5>
-                            <p class="card-text d-flex justify-content-between">
-                                <span><strong>District:</strong> {{ shop.district.name }}</span>
-                                <span><strong>Product:</strong> {{ shop.product }}</span>
-                            </p>
-                            <div class="text-center">
-                                <a href="#" class="btn btn-success">View Shop</a>
-                            </div>
-                            
-                        </div>
-                    </div>
+    <div class="col-md-4">
+        <div class="card shadow">
+            <img src="{{shop.image}}" class="card-img-top" alt="Shop 1">
+            <div class="card-body">
+                <h5 class="card-title">{{shop.shop_name}}</h5>
+                <p class="card-text">
+                    <strong>Product:</strong> {{ shop.vegetables.vegetable }} <br>
+                    <strong>District:</strong> {{ shop.district.name }} <br>
+                    <strong>Review:</strong> ⭐⭐⭐⭐☆
+                </p>
+                <div class="d-flex justify-content-between">
+                    <span></span> <!-- Empty span to push button to the right -->
+                    <a href="{% url "marketplace:shop" slug=shop.slug%}" class="btn btn-success rounded-pill">View Shop</a>
                 </div>
-            {% empty %}
-                <h2 class="text-center">No shops yet</h2>
-            {% endfor %}
+            </div>
+        </div>
+    </div>
+{% empty %}
+    <h2 class="text-center">No shops yet</h2>
+{% endfor %}
+
+
     </section>
     {% include "marketplace/includes/pagenation.html" %}
     <!-- Footer -->
-    <footer class="bg-dark text-white text-center">
-        <p>© 2025 Farmer Bazar | Connecting Farmers & Consumers</p>
-    </footer>
+    {% include "marketplace/includes/footer.html" %}
 
 {% endblock content %}
