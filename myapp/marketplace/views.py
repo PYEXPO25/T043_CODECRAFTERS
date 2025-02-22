@@ -1,31 +1,57 @@
 from django.shortcuts import render,redirect, get_object_or_404
 from django.http.response import HttpResponse
 from . forms import RegisterForm,SetPasswordForm,LoginForm
-from django.contrib.auth import authenticate,login
+from django.contrib.auth import authenticate,login,logout
 from django.core.mail import send_mail
 from django.contrib.auth.hashers import make_password
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.paginator import Paginator
 from django.template.loader import render_to_string
 from django.contrib import messages
-from .models import Product, Shop, temp_user
+from .models import Product, Shop, temp_user,Vegetables
 from django.contrib.auth.models import User
 import uuid
 from django.urls import reverse
-
+from django.db.models import Q
 # Create your views here.
 
 def index(request):
-    shops = Shop.objects.all()
-    paginator = Paginator(shops,3)
+    
+    search = request.GET.get('query', '').strip()
+    search_terms = search.split()
+    
+    shop_query = Q()   # For searching shops
+    product_query = Q() # For searching products
+
+    if search:
+        # 🔹 Step 1: Find matching vegetable IDs
+        vegetable_matches = Vegetables.objects.filter(vegetable__icontains=search).values_list('id', flat=True)
+
+        for term in search_terms:
+            shop_query |= Q(shop_name__icontains=term)  # Search in Shop
+            product_query |= Q(category_id__in=vegetable_matches) | Q(shop_name__shop_name__icontains=term)  
+
+        # 🔹 Step 2: Search for products and shops separately
+        products = Product.objects.filter(product_query)
+        shops = Shop.objects.filter(is_available=True).filter(shop_query)
+
+        if not products and not shops:
+            messages.warning(request, "No results found")
+    else:
+        shops = Shop.objects.filter(is_available=True)
+        products = Product.objects.all()
+
+    paginator = Paginator(shops, 3)
     page_num = request.GET.get("page")
     page_obj = paginator.get_page(page_num)
-    return render(request,'marketplace/index.html',{'style':'index','title':'Home Page','page_obj':page_obj})
 
+    return render(request, 'marketplace/index.html', {
+        'style': 'index',
+        'title': 'Home Page',
+        'page_obj': page_obj,
+        'products': products
+    })
 
-
-def log_out(request):
-    pass
 
 
 
@@ -115,3 +141,8 @@ def view_shop(request,slug):
     page_num = request.GET.get("page")
     page_obj = paginator.get_page(page_num)
     return render(request,"marketplace/viewshop.html",{'style':'viewshop','shop':shop,"page_obj":page_obj})
+
+
+def logout_view(request):
+    logout(request)
+    return redirect("blog:index")

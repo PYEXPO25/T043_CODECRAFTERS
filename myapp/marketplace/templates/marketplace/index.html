@@ -10,12 +10,15 @@
             <p class="fw-semibold fs-4">Fresh & Organic Produce Directly from Farmers</p>
             <div class="container d-flex justify-content-center">
                 <div class="w-75">
-                    <input class="form-control mb-2 rounded-pill p-3" type="search" placeholder="Search for shops or product" aria-label="Search">
-                    <div class="text-center">
-                        <button class="btn btn-success px-4 py-2 rounded-pill" type="submit">Search</button>
-                    </div>
+                    <form method="GET" action="{% url 'marketplace:index' %}">
+                        <input class="form-control mb-2 rounded-pill p-3" name="query" type="search" placeholder="Search for shops or products" aria-label="Search">
+                        <div class="text-center">
+                            <button class="btn btn-success px-4 py-2 rounded-pill" type="submit">Search</button>
+                        </div>
+                    </form>
                 </div>
             </div>
+            
             
         </div>
     </header>
@@ -31,8 +34,12 @@
             <div class="card-body">
                 <h5 class="card-title">{{shop.shop_name}}</h5>
                 <p class="card-text">
-                    <strong>Product:</strong> {{ shop.vegetables.vegetable }} <br>
-                    <strong>District:</strong> {{ shop.district.name }} <br>
+                    <strong>Product:</strong> 
+<a href="/?query={{shop.vegetables.vegetable}}">{{ shop.vegetables.vegetable }}</a> <br>
+
+<strong>District:</strong> 
+<a href="/?query={{shop.district.name}}">{{ shop.district.name }}</a> <br>
+
                     <strong>Review:</strong> ⭐⭐⭐⭐☆
                 </p>
                 <div class="d-flex justify-content-between">
