@@ -10,15 +10,15 @@
     <div class="row">
         <!-- Shop Image -->
         <div class="col-md-6">
-            <img src="shop/shop1.jpg" class="img-fluid shop-image" alt="Shop Image">
+            <img src="{{shop.formeted_image}}" class="img-fluid shop-image" alt="Shop Image">
         </div>
         
         <!-- Shop Details -->
         <div class="col-md-6">
             <h2>Green Farm</h2>
-            <p><strong>Owner:</strong> Ramesh Kumar</p>
-            <p><strong>Location:</strong> Punjab</p>
-            <p><strong>Contact:</strong> +91 98765 43210</p>
+            <p><strong>Owner:</strong> {{shop.shop_owner}}</p>
+            <p><strong>Location:</strong> {{shop.district}}</p>
+            <p><strong>Contact:</strong> {{shop.shop_owner.email}}</p>
             <p class="rating">⭐⭐⭐⭐☆ (4.5/5)</p>
             <p>Green Farm is known for its high-quality organic vegetables and fresh produce sourced directly from the fields.</p>
 
@@ -32,13 +32,13 @@
 <div class="container my-5">
     <h3 class="text-center mb-4">Available Products</h3>
     <div class="row">
-        {% for product in Products %}
+        {% for product in page_obj %}
         <div class="col-md-4">
             <div class="card product-card shadow">
-                <img src="vegetables/tomato.webp" class="card-img-top product-img" alt="Tomato">
+                <img src="{{product.formeted_image}}" class="card-img-top product-img" alt="Tomato">
                 <div class="card-body text-center">
-                    <h5 class="card-title">Tomatoes</h5>
-                    <p class="card-text"><strong>₹50/kg</strong></p>
+                    <h5 class="card-title">{{product.category}}</h5>
+                    <p class="card-text"><strong>₹{{product.price_per_kg}}</strong></p>
                     <a href="#" class="btn btn-success btn-rounded">View Product</a>
                 </div>
             </div>
@@ -46,6 +46,8 @@
         {% endfor %}
     </div>
 </div>
+
+{% include "marketplace/includes/pagenation.html" %}
 
 <!-- Footer -->
 

@@ -8,7 +8,7 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.core.paginator import Paginator
 from django.template.loader import render_to_string
 from django.contrib import messages
-from .models import Shop, temp_user
+from .models import Product, Shop, temp_user
 from django.contrib.auth.models import User
 import uuid
 from django.urls import reverse
@@ -110,5 +110,8 @@ def login_view(request):
 
 def view_shop(request,slug):
     shop = Shop.objects.get(slug=slug)
-    
-    return render(request,"marketplace/viewshop.html",{'style':'viewshop'})
+    products = Product.objects.filter(shop_name=shop)
+    paginator = Paginator(products,3)
+    page_num = request.GET.get("page")
+    page_obj = paginator.get_page(page_num)
+    return render(request,"marketplace/viewshop.html",{'style':'viewshop','shop':shop,"page_obj":page_obj})

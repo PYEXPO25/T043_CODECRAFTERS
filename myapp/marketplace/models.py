@@ -30,6 +30,16 @@ class Shop(models.Model):
 
     def __str__(self):
         return self.shop_name
+    
+    @property
+    def formeted_image(self):
+
+        if self.image.__str__().startswith(('http://','https://')):
+            url = self.image
+        else:
+            url = self.image.url
+            
+        return url
 
     def save(self,*args, **kwargs):
         slug = self.shop_name + self.shop_owner.username
@@ -59,7 +69,16 @@ class Product(models.Model):
             self.image = self.category.images  
         super().save(*args, **kwargs)
     
+    @property
+    def formeted_image(self):
 
+        if self.image.__str__().startswith(('http://','https://')):
+            url = self.image
+        else:
+            url = self.image.url
+            
+        return url
+    
     def __str__(self):
         return f"{self.category.vegetables} - {self.prize_per_kg}"
 

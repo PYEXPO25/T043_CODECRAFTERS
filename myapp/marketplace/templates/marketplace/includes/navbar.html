@@ -6,10 +6,35 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto">
-                <li class="nav-item"><a class="nav-link" href="#">Home</a></li>
-                <li class="nav-item"><a class="nav-link" href="#">Shops</a></li>
-                <li class="nav-item"><a class="nav-link" href="#">Register Shop</a></li>
-                <li class="nav-item"><a class="nav-link btn btn-light text-success btn-rounded" href="#">Login</a></li>
+                <li class="nav-item">
+                    <a class="nav-link btn btn-info text-white px-3 py-1 rounded-pill" href="#">
+                        Home
+                    </a>
+                </li>
+
+                {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link btn btn-info text-white px-3 py-1 rounded-pill" href="#">
+                            My Shops
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link btn btn-danger text-white px-3 py-1 rounded-pill" href="">
+                            Logout ({{ user.username }})
+                        </a>
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link btn btn-success text-white px-3 py-1 rounded-pill" href="{% url 'register' %}">
+                            Register
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link btn btn-primary text-white px-3 py-1 rounded-pill" href="{% url 'login' %}">
+                            Login
+                        </a>
+                    </li>
+                {% endif %}
             </ul>
         </div>
     </div>
