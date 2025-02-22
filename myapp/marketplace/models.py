@@ -47,11 +47,17 @@ class temp_user(models.Model):
     token = models.UUIDField(default=uuid.uuid4, unique=True)
 
 class Product(models.Model):
-    prize_per_kg = models.FloatField()
+    price_per_kg = models.FloatField()
     shop_name = models.ForeignKey(Shop,on_delete=models.CASCADE)
     category = models.ForeignKey(Vegetables,on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField()
     description = models.TextField(null=False)
+    image = models.ImageField(null=True,max_length=300)
+
+    def save(self,*args, **kwargs):
+        if not self.image:
+            self.image = self.category.images  
+        super().save(*args, **kwargs)
     
 
     def __str__(self):
