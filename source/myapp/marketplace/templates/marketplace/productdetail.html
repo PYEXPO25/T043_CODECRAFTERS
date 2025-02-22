@@ -1,0 +1,76 @@
+
+{% extends "marketplace/includes/base.html" %}
+
+{% block content %}
+    <nav class="navbar navbar-expand-lg navbar-dark bg-success">
+        <div class="container">
+            <a class="navbar-brand" href="#">🌿 Farmer Bazar</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link btn btn-info text-white px-3 py-1 rounded-pill" href="#">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link btn btn-primary text-white px-3 py-1 rounded-pill" href="#">My Orders</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-5">
+        <div class="row">
+            <!-- Product Image -->
+            <div class="col-md-5">
+                <img src="{{product.formeted_image}}" class="img-fluid rounded shadow" alt="Product Image">
+            </div>
+            
+            <!-- Product Info -->
+            <div class="col-md-7">
+                <h2 class="fw-bold">Organic Tomatoes</h2>
+                <p class="text-muted">Fresh and organic farm-grown tomatoes. Perfect for your daily meals.</p>
+                <h4 class="text-success">₹{{product.price_per_kg}} per kg</h4>
+
+                <p><strong>Shop:</strong> <a href="#" class="text-decoration-none">{{shopname}}</a></p>
+                <p><strong>Location:</strong> {{shop.district.name}}</p>
+
+                <!-- Order Form -->
+                <form>
+                    <div class="mb-3">
+                        <label for="quantity" class="form-label">Select Quantity (kg):</label>
+                        <input type="number" class="form-control w-50" id="quantity" min="1" value="1">
+                    </div>
+                    
+                    <button type="submit" class="btn btn-danger px-4 py-2 rounded-pill">🚀 Buy Now</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Customer Reviews -->
+        <div class="mt-5">
+            <h3>Customer Reviews</h3>
+            <div class="border p-3 rounded bg-white">
+                <p><strong>Raj Kumar</strong> ⭐⭐⭐⭐</p>
+                <p>Fresh and tasty tomatoes! Delivered on time.</p>
+            </div>
+            <div class="border p-3 rounded bg-white mt-2">
+                <p><strong>Asha Patel</strong> ⭐⭐⭐⭐⭐</p>
+                <p>Very fresh! The quality was amazing.</p>
+            </div>
+
+            <!-- Add Review Form -->
+            <h5 class="mt-4">Leave a Review</h5>
+            <form>
+                <div class="mb-3">
+                    <label for="review" class="form-label">Your Review</label>
+                    <textarea class="form-control" id="review" rows="3"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Submit Review</button>
+            </form>
+        </div>
+    </div>
+
+{% endblock content %}

@@ -147,3 +147,6 @@ def logout_view(request):
     logout(request)
     return redirect("blog:index")
 
+def showproduct(request,shopname,product):
+    
+    return render(request,'marketplace/productdetail.html',{'shop':shopname,'product':product})
