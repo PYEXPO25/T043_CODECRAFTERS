@@ -110,5 +110,5 @@ def login_view(request):
 
 def view_shop(request,slug):
     shop = Shop.objects.get(slug=slug)
-
+    
     return render(request,"marketplace/viewshop.html",{'style':'viewshop'})
