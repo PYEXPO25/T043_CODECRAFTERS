@@ -1,6 +1,6 @@
 from django.shortcuts import render,redirect, get_object_or_404
 from django.http.response import HttpResponse,HttpResponseRedirect
-from . forms import RegisterForm,SetPasswordForm,LoginForm
+from . forms import RegisterForm,SetPasswordForm,LoginForm,OrderForm
 from django.contrib.auth import authenticate,login,logout
 from django.core.mail import send_mail
 from django.contrib.auth.hashers import make_password
@@ -17,29 +17,13 @@ from django.db.models import Q
 
 def index(request):
     
-    search = request.GET.get('query', '').strip()
-    search_terms = search.split()
+    search = request.GET.get('query', '')
     
-    shop_query = Q()   # For searching shops
-    product_query = Q() # For searching products
-
     if search:
-        # 🔹 Step 1: Find matching vegetable IDs
-        vegetable_matches = Vegetable.objects.filter(vegetable__icontains=search).values_list('id', flat=True)
-
-        for term in search_terms:
-            shop_query |= Q(shop_name__icontains=term)  # Search in Shop
-            product_query |= Q(category_id__in=vegetable_matches) | Q(shop_name__shop_name__icontains=term)  
-
-        # 🔹 Step 2: Search for products and shops separately
-        products = Product.objects.filter(product_query)
-        shops = Shop.objects.filter(is_available=True).filter(shop_query)
-
-        if not products and not shops:
-            messages.warning(request, "No results found")
-    else:
-        shops = Shop.objects.filter()
-        products = Product.objects.all()
+        return redirect(reverse("marketplace:search"))
+    
+    shops = Shop.objects.filter()
+    products = Product.objects.all()
 
     paginator = Paginator(shops, 9)
     page_num = request.GET.get("page")
@@ -53,6 +37,50 @@ def index(request):
     })
 
 
+
+
+def search_results(request):
+    query = request.GET.get('q', '')
+    selected_categories = request.GET.getlist('category')
+    selected_districts = request.GET.getlist('district')
+    sort_option = request.GET.get('sort', 'price_low')
+    
+    products = Product.objects.all()
+    
+    if query:
+        products = products.filter(
+            Q(name__icontains=query) |
+            Q(shop__name__icontains=query) |
+            Q(category__name__icontains=query)
+        )
+    
+    if selected_categories:
+        products = products.filter(category__id__in=selected_categories)
+    
+    if selected_districts:
+        products = products.filter(shop__district__in=selected_districts)
+    
+    if sort_option == 'price_low':
+        products = products.order_by('price_per_kg')
+    elif sort_option == 'price_high':
+        products = products.order_by('-price_per_kg')
+    elif sort_option == 'name_az':
+        products = products.order_by('name')
+    elif sort_option == 'name_za':
+        products = products.order_by('-name')
+    
+    categories = Vegetable.objects.all()
+    districts = Shop.objects.values_list('district', flat=True).distinct()
+    
+    return render(request, 'marketplace/search_results.html', {
+        'products': products,
+        'query': query,
+        'categories': categories,
+        'districts': districts,
+        'selected_categories': selected_categories,
+        'selected_districts': selected_districts,
+        'sort_option': sort_option
+    })
 
 
 def register(request):
@@ -148,6 +176,38 @@ def logout_view(request):
    
     return redirect(reverse("marketplace:index"))
 
-def showproduct(request,shopname,product):
-    product = Product.objects.get(slug=product)
-    return render(request,'marketplace/productdetail.html',{'shop':shopname,'product':product})
+
+
+def showproduct(request, shopslug, product):
+    product = get_object_or_404(Product, slug=product)
+    shop = get_object_or_404(Shop, slug=shopslug)
+    form = OrderForm()
+
+    if request.method == 'POST':
+        form = OrderForm(request.POST)
+        if form.is_valid():
+            order = form.save(commit=False)
+            order.user = request.user
+            order.product = product
+            order.total_price = order.quantity * product.price_per_kg
+
+            
+            if product.quantity >= order.quantity:
+                product.quantity -= order.quantity
+                product.save()
+
+                order.save()
+                messages.success(request, "Your order has been successfully placed!")
+                return redirect(reverse("marketplace:showproduct", kwargs={"shopslug": shopslug, "product": product.slug}))
+
+            else:
+                messages.error(request, "Insufficient stock available!")
+
+    return render(request, 'marketplace/productdetail.html', {'shop': shop, 'product': product, 'form': form})
+
+
+
+def myshops(request):
+
+    myshops = Shop.objects.filter(shop_owner = request.user)
+    return render(request,"marketplace/myshops.html",{})

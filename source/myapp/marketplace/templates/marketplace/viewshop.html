@@ -1,7 +1,11 @@
-
 {% extends "marketplace/includes/base.html" %}
+{% load static %}
 
-<!-- Navbar -->
+
+
+{% block style %}
+    <link rel="stylesheet" href="{% static "marketplace/viewshop.css" %}" />
+{% endblock style %}
 
 
 {% block content %}
@@ -20,7 +24,7 @@
             <p><strong>Location:</strong> {{shop.district}}</p>
             <p><strong>Contact:</strong> {{shop.shop_owner.email}}</p>
             <p class="rating">⭐⭐⭐⭐☆ (4.5/5)</p>
-            <p>{{shop.shop_name}} is known for its high-quality organic vegetables and fresh produce sourced directly from the fields.</p>
+            <p>{{shop.shop_description}}</p>
 
             <a href="#" class="btn btn-success btn-rounded">Contact Shop</a>
             <a href="#" class="btn btn-outline-success btn-rounded">View Location</a>
@@ -40,7 +44,7 @@
                 <div class="card-body text-center">
                     <h5 class="card-title">{{product.category}}</h5>
                     <p class="card-text"><strong>₹{{product.price_per_kg}}</strong></p>
-                    <a href="{% url "marketplace:showproduct" shopname=product.shop.name product=product.slug %}" class="btn btn-success btn-rounded">View Product</a>
+                    <a href="{% url "marketplace:showproduct" shopslug=product.shop.slug product=product.slug %}" class="btn btn-success btn-rounded">View Product</a>
 
                     {% comment %} {% url "marketplace:showproduct" shopname=shop.name product=product.product_name%} {% endcomment %}
                 </div>
@@ -52,7 +56,7 @@
 
 {% include "marketplace/includes/pagenation.html" %}
 
-<!-- Footer -->
+{% include "marketplace/includes/review.html" %}
 
 {% include "marketplace/includes/footer.html" %}
 

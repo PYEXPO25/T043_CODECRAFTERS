@@ -4,10 +4,9 @@ import random
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
-        # Clear existing products (optional)
+       
         Product.objects.all().delete()
 
-        # List of predefined prices
         prices = [
             25.0, 40.0, 35.0, 50.0, 45.0, 30.0, 38.0, 28.0, 32.0, 20.0, 60.0, 42.0, 
             150.0, 200.0, 30.0, 70.0, 25.0, 55.0, 22.0, 80.0, 10.0, 500.0, 35.0, 15.0, 

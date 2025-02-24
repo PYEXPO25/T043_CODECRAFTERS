@@ -1,7 +1,15 @@
 {% extends "marketplace/includes/base.html" %}
+{% load static %}
+
+
+
+{% block style %}
+    <link rel="stylesheet" href="{% static "marketplace/index.css" %}" />
+{% endblock style %}
+
 {% block content %}
     
-    {% include "marketplace/includes/navbar.html" %}
+{% include "marketplace/includes/navbar.html" %}
 
     <!-- Hero Section -->
     <header class="hero">

@@ -1,0 +1,23 @@
+
+<div class="mt-5">
+    <h3>Customer Reviews</h3>
+
+    {% for review in reviews %}
+    <div class="border p-3 rounded bg-white">
+        <p><strong>Raj Kumar</strong> ⭐⭐⭐⭐</p>
+        <p>Fresh and tasty tomatoes! Delivered on time.</p>
+    </div>
+    {% empty %}
+        <p>No reviews yet</p>
+    {% endfor %}
+    
+    <h5 class="mt-4">Leave a Review</h5>
+    <form>
+        <div class="mb-3">
+            <label for="review" class="form-label">Your Review</label>
+            <textarea class="form-control" id="review" rows="3"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit Review</button>
+    </form>
+</div>
+</div>

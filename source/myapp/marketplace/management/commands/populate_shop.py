@@ -2,10 +2,10 @@ from marketplace.models import Shop
 from typing import Any
 from django.core.management.base import BaseCommand
 from django.contrib.auth.models import User
-from marketplace.models import District,Vegetable
+from marketplace.models import District
 import random
 class Command(BaseCommand):
-
+    
     def handle(self, *args, **options):
         Shop.objects.all().delete()
         shops = [

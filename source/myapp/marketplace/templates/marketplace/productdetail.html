@@ -1,25 +1,11 @@
-
 {% extends "marketplace/includes/base.html" %}
+{% load static %}
+
+
 
 {% block content %}
-    <nav class="navbar navbar-expand-lg navbar-dark bg-success">
-        <div class="container">
-            <a class="navbar-brand" href="#">🌿 Farmer Bazar</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link btn btn-info text-white px-3 py-1 rounded-pill" href="#">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link btn btn-primary text-white px-3 py-1 rounded-pill" href="#">My Orders</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
+
+    {% include "marketplace/includes/navbar.html" %}
 
     <div class="container mt-5">
         <div class="row">
@@ -33,24 +19,34 @@
                 <h2 class="fw-bold">{{product.category}}</h2>
                 <p class="text-muted">{{product.description}}</p>
                 <h4 class="text-success">₹{{product.price_per_kg}} per kg</h4>
-
-                <p><strong>Shop:</strong> <a href="#" class="text-decoration-none">{{shop}}</a></p>
+                <p class="mb-0">
+                    <div class="d-inline-flex align-items-center">
+                        <strong class="me-2">Shop:</strong> 
+                        <div class="p-2" style="transition: background-color 0.3s ease-in-out; border-radius: 30px;"
+                             onmouseover="this.style.backgroundColor='#f8d7da';"
+                             onmouseout="this.style.backgroundColor='transparent';">
+                            <a href="{% url 'marketplace:shop' slug=shop.slug %}" class="text-decoration-none text-dark fw-bold">{{ shop }}</a>
+                        </div>
+                    </div>
+                    
                 <p><strong>Location:</strong> {{shop.district.name}}</p>
-
+                <p><strong>Available Quantity:</strong> {{product.quantity}} Kg</p>
                 <!-- Order Form -->
-                <form>
-                    <div class="mb-3">
+                <form class="d-flex flex-column align-items-center" method="POST">
+                    <div class="mb-3 w-100 text-center">
+                        {% csrf_token %}
                         <label for="quantity" class="form-label">Select Quantity (kg):</label>
-                        <input type="number" class="form-control w-50" id="quantity" min="1" value="1">
+                        <input type="number" name="quantity" class="form-control w-50 mx-auto" id="quantity" min="1" value="1">
                     </div>
                     
                     <button type="submit" class="btn btn-danger px-4 py-2 rounded-pill">🚀 Buy Now</button>
                 </form>
+                
             </div>
         </div>
 
-        <!-- Customer Reviews -->
-        <div class="mt-5">
+        {% include "marketplace/includes/messages.html" %}
+        {% comment %} <div class="mt-5">
             <h3>Customer Reviews</h3>
             <div class="border p-3 rounded bg-white">
                 <p><strong>Raj Kumar</strong> ⭐⭐⭐⭐</p>
@@ -61,7 +57,7 @@
                 <p>Very fresh! The quality was amazing.</p>
             </div>
 
-            <!-- Add Review Form -->
+            
             <h5 class="mt-4">Leave a Review</h5>
             <form>
                 <div class="mb-3">
@@ -71,6 +67,6 @@
                 <button type="submit" class="btn btn-primary">Submit Review</button>
             </form>
         </div>
-    </div>
+    </div> {% endcomment %}
 
 {% endblock content %}

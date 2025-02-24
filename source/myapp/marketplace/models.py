@@ -56,7 +56,7 @@ class Shop(models.Model):
             self.image = random.choice(images)
 
         if not self.shop_description:
-          self.description = "A farm shop offering fresh, locally sourced produce, dairy, and homemade goods straight from the farm. Enjoy organic fruits, vegetables, and artisanal products while supporting local farmers and sustainable practices."
+          self.shop_description = "A farm shop offering fresh, locally sourced produce, dairy, and homemade goods straight from the farm. Enjoy organic fruits, vegetables, and artisanal products while supporting local farmers and sustainable practices."
 
         super().save(*args, **kwargs)
 
@@ -154,7 +154,8 @@ class Product(models.Model):
             self.description = f"Buy this Fresh and high-quality {self.category} at {self.shop}."
 
         if not self.slug:
-            self.slug = slugify(self.shop.name+self.shop.shop_owner.username+self.category.name)
+            slug = self.shop.name+"-"+self.shop.shop_owner.username+"-"+self.category.name
+            self.slug = slugify(slug)
         super().save(*args, **kwargs)
 
         
@@ -184,3 +185,18 @@ class Farmer(models.Model):
 
     def __str__(self):
         return self.user.username
+
+class Order(models.Model):
+    
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="orders")
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="orders")
+    quantity = models.PositiveIntegerField(validators=[MinValueValidator(1)])
+    total_price = models.FloatField()
+    
+    order_date = models.DateTimeField(auto_now_add=True)
+
+    
+
+    def __str__(self):
+        return f"Order #{self.id} - {self.product.category.name} ({self.quantity} kg) by {self.user.username}"

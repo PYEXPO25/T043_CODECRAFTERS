@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
+from . models import Order
 
 class RegisterForm(forms.Form):
     username=forms.CharField(label='Username',max_length=20,required=True)
@@ -44,3 +45,24 @@ class SetPasswordForm(forms.Form):
 
         if password and password_confirm and password != password_confirm:
             raise forms.ValidationError("Password does not match")
+        
+
+class OrderForm(forms.ModelForm):
+    quantity = forms.IntegerField(min_value=1)
+    
+
+    class Meta:
+        model = Order
+        fields = ["quantity"]
+
+    def __init__(self, *args, **kwargs):
+        self.product = kwargs.pop("product", None)  # Get product instance
+        super().__init__(*args, **kwargs)
+
+        if self.product:
+            self.fields["quantity"].validators.append(lambda q: self.validate_quantity(q))
+
+    def validate_quantity(self, quantity):
+        if self.product and quantity > self.product.quantity:
+            raise forms.ValidationError(f"Only {self.product.quantity} kg available!")
+        

@@ -10,5 +10,7 @@ urlpatterns = [
     path('login/',views.login_view,name="login"),
     path('shop/<str:slug>',views.view_shop,name="shop"),
     path('logout/',views.logout_view,name="log_out"),
-    path('<shopname>/<product>/',views.showproduct,name="showproduct"),
+    path('<shopslug>/<product>/',views.showproduct,name="showproduct"),
+    path('myshops/',views.myshops,name="myshops"),
+    path('search/',views.search_results,name="search"),
 ]
