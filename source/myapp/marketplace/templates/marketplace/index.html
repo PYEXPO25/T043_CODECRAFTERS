@@ -28,20 +28,20 @@
         <h2 class="text-center mb-4">Featured Farmer Shops</h2>
         <div class="row">
             {% for shop in page_obj %}
-    <div class="col-md-4">
+    <div class="col-md-4 p-2">
         <div class="card shadow">
             <img src="{{shop.image}}" class="card-img-top" alt="Shop 1">
             <div class="card-body">
                 <h5 class="card-title">{{shop.shop_name}}</h5>
-                <p class="card-text">
-                    <strong>Product:</strong> 
+                <p class="card-text"> </p>
+                  <strong>Shop Name:</strong>{{shop.name}}
 <a href="/?query={{shop.vegetables.vegetable}}">{{ shop.vegetables.vegetable }}</a> <br>
 
 <strong>District:</strong> 
 <a href="/?query={{shop.district.name}}">{{ shop.district.name }}</a> <br>
-
-                    <strong>Review:</strong> ⭐⭐⭐⭐☆
-                </p>
+                
+                <p><strong>Description:</strong>{{shop.shop_description|truncatechars:36}}</p>
+                <p><strong>Review:</strong> ⭐⭐⭐⭐☆</p>
                 <div class="d-flex justify-content-between">
                     <span></span> <!-- Empty span to push button to the right -->
                     <a href="{% url "marketplace:shop" slug=shop.slug%}" class="btn btn-success rounded-pill">View Shop</a>

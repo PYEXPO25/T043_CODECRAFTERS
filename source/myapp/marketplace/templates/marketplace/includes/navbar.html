@@ -7,11 +7,11 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item">
-                    <a class="nav-link btn btn-info text-white px-3 py-1 rounded-pill" href="#">
+                    <a class="nav-link btn btn-info text-white px-3 py-1 rounded-pill" href="{% url "marketplace:index" %}">
                         Home
                     </a>
                 </li>
-
+                {% csrf_token %}
                 {% if user.is_authenticated %}
                     <li class="nav-item">
                         <a class="nav-link btn btn-info text-white px-3 py-1 rounded-pill" href="#">
@@ -20,7 +20,8 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link btn btn-danger text-white px-3 py-1 rounded-pill" href="{% url "marketplace:log_out" %}">
-                            Logout ({{ user.username }})
+                            
+                            Logout ({{ request.user.username }})
                         </a>
                     </li>
                 {% else %}

@@ -1,5 +1,5 @@
 from django.shortcuts import render,redirect, get_object_or_404
-from django.http.response import HttpResponse
+from django.http.response import HttpResponse,HttpResponseRedirect
 from . forms import RegisterForm,SetPasswordForm,LoginForm
 from django.contrib.auth import authenticate,login,logout
 from django.core.mail import send_mail
@@ -41,7 +41,7 @@ def index(request):
         shops = Shop.objects.filter()
         products = Product.objects.all()
 
-    paginator = Paginator(shops, 3)
+    paginator = Paginator(shops, 9)
     page_num = request.GET.get("page")
     page_obj = paginator.get_page(page_num)
 
@@ -145,7 +145,8 @@ def view_shop(request,slug):
 
 def logout_view(request):
     logout(request)
-    return redirect("blog:index")
+   
+    return redirect(reverse("marketplace:index"))
 
 def showproduct(request,shopname,product):
     

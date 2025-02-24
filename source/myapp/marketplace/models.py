@@ -43,7 +43,11 @@ class Shop(models.Model):
         return self.name
 
     def save(self, *args, **kwargs):
-        images = ["https://images.stockcake.com/public/7/b/2/7b208ddd-1125-4d86-b25b-87b124f03469_large/rural-farm-landscape-stockcake.jpg","https://images.pexels.com/photos/96715/pexels-photo-96715.jpeg?cs=srgb&dl=pexels-alejandro-barron-21404-96715.jpg&fm=jpg","https://cdn.sanity.io/images/ec9j7ju7/production/f6f10b735cf1c9c7bb494d56af0af099dfd823a5-3884x2594.jpg?w=3840&q=75&fit=clip&auto=format"]
+        images = ["https://images.stockcake.com/public/7/b/2/7b208ddd-1125-4d86-b25b-87b124f03469_large/rural-farm-landscape-stockcake.jpg",
+                  "https://images.pexels.com/photos/96715/pexels-photo-96715.jpeg?cs=srgb&dl=pexels-alejandro-barron-21404-96715.jpg&fm=jpg",
+                  "https://cdn.sanity.io/images/ec9j7ju7/production/f6f10b735cf1c9c7bb494d56af0af099dfd823a5-3884x2594.jpg?w=3840&q=75&fit=clip&auto=format",
+                  "https://cdn.pixabay.com/photo/2017/05/19/15/16/countryside-2326787_1280.jpg",
+                  "https://www.nifa.usda.gov/sites/default/files/styles/hero_image_small_1024w/public/2023-03/farm-business-rfa.jpg?itok=zN6Xpx7N"]
 
         if not self.slug:
             self.slug = slugify(f"{self.name}-{self.shop_owner.username}")
@@ -51,8 +55,8 @@ class Shop(models.Model):
         if not self.image:
             self.image = random.choice(images)
 
-        # if not self.description:
-        #    self.description = "A farm shop offering fresh, locally sourced produce, dairy, and homemade goods straight from the farm. Enjoy organic fruits, vegetables, and artisanal products while supporting local farmers and sustainable practices."
+        if not self.shop_description:
+          self.description = "A farm shop offering fresh, locally sourced produce, dairy, and homemade goods straight from the farm. Enjoy organic fruits, vegetables, and artisanal products while supporting local farmers and sustainable practices."
 
         super().save(*args, **kwargs)
 
@@ -141,14 +145,19 @@ class Product(models.Model):
     quantity = models.PositiveIntegerField(null=False)
     description = models.TextField()
     image = models.ImageField(upload_to="products/", null=True, blank=True)
-    
+    slug = models.SlugField(max_length=100)
     def save(self, *args, **kwargs):
         if not self.image:
             self.image = self.category.default_image 
 
         if not self.description:
             self.description = f"Buy this Fresh and high-quality {self.category} at {self.shop}."
+
+        if not self.slug:
+            self.slug = slugify(self.shop.name+self.shop.shop_owner.username+self.category.name)
         super().save(*args, **kwargs)
+
+        
 
     @property
     def formated_image(self):
@@ -159,6 +168,11 @@ class Product(models.Model):
             url = self.image.url
             
         return url
+    
+    def product_name(self):
+        name = self.category.name + self.shop.name
+
+        return name
 
     def __str__(self):
         return f"{self.category.name} - {self.price_per_kg}"
