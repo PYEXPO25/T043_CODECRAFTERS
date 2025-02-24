@@ -8,7 +8,7 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.core.paginator import Paginator
 from django.template.loader import render_to_string
 from django.contrib import messages
-from .models import Product, Shop, temp_user,Vegetables
+from .models import Product, Shop, TempUser,Vegetable
 from django.contrib.auth.models import User
 import uuid
 from django.urls import reverse
@@ -25,7 +25,7 @@ def index(request):
 
     if search:
         # 🔹 Step 1: Find matching vegetable IDs
-        vegetable_matches = Vegetables.objects.filter(vegetable__icontains=search).values_list('id', flat=True)
+        vegetable_matches = Vegetable.objects.filter(vegetable__icontains=search).values_list('id', flat=True)
 
         for term in search_terms:
             shop_query |= Q(shop_name__icontains=term)  # Search in Shop
@@ -38,7 +38,7 @@ def index(request):
         if not products and not shops:
             messages.warning(request, "No results found")
     else:
-        shops = Shop.objects.filter(is_available=True)
+        shops = Shop.objects.filter()
         products = Product.objects.all()
 
     paginator = Paginator(shops, 3)
@@ -68,7 +68,7 @@ def register(request):
                 username = form.cleaned_data['username']
                 
                 token = str(uuid.uuid4())  # Generate a unique token
-                user = temp_user.objects.create(email=email, name=name, token=token,username = username)
+                user = TempUser.objects.create(email=email, name=name, token=token,username = username)
                 
                 
                 subject = "Password Change Request"
@@ -94,7 +94,7 @@ def register(request):
 
 
 def set_password(request, token):
-    Temp_user = get_object_or_404(temp_user, token=token)
+    Temp_user = get_object_or_404(TempUser, token=token)
     form = SetPasswordForm()
     if request.method == 'POST':
         form = SetPasswordForm(request.POST)
@@ -114,7 +114,7 @@ def set_password(request, token):
             
             return redirect(reverse('marketplace:login')) 
 
-    return render(request, 'marketplace/set_password.html', {'email': temp_user.email,'title':'Set Password','style':'forms'})
+    return render(request, 'marketplace/set_password.html', {'email': TempUser.email,'title':'Set Password','style':'forms'})
 
 
 def login_view(request):
@@ -136,7 +136,7 @@ def login_view(request):
 
 def view_shop(request,slug):
     shop = Shop.objects.get(slug=slug)
-    products = Product.objects.filter(shop_name=shop)
+    products = Product.objects.filter(shop=shop)
     paginator = Paginator(products,3)
     page_num = request.GET.get("page")
     page_obj = paginator.get_page(page_num)

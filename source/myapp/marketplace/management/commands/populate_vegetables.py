@@ -1,10 +1,10 @@
-from marketplace.models import Vegetables
+from marketplace.models import Vegetable
 from typing import Any
 from django.core.management.base import BaseCommand
 class Command(BaseCommand):
 
     def handle(self, *args, **options):
-        Vegetables.objects.all().delete()
+        Vegetable.objects.all().delete()
         vegetables = [
     "Potato", "Okra", "Brinjal", "Carrot", "Cauliflower", "Bottle Gourd",
     "Ridge Gourd", "Turnip", "Radish", "Tomato", "Bell Pepper", "Beetroot",
@@ -33,6 +33,6 @@ class Command(BaseCommand):
 ]
 
         for vegetable,image in zip(vegetables,vegetable_images):
-            Vegetables.objects.create(vegetable = vegetable,images = image)
+            Vegetable.objects.create(name = vegetable,default_image = image)
             
         self.stdout.write(self.style.SUCCESS("Successfully insereted."))

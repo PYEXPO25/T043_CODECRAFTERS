@@ -1,38 +1,64 @@
 from django.db import models
 from django.contrib.auth.models import User
-import uuid 
+import uuid
 from django.utils.text import slugify
-
+from django.core.validators import MinValueValidator, MaxValueValidator
+import random
 
 
 class District(models.Model):
-    name = models.CharField(max_length=50)
-    def __str__(self):
-        return self.name
-    
-class Vegetables(models.Model):
-    vegetable = models.CharField(max_length=50)
-    images = models.ImageField(null=True,upload_to="vegetables/")
+    name = models.CharField(max_length=50, unique=True)
 
     def __str__(self):
-        return self.vegetable
+        return self.name
+
+
+class Vegetable(models.Model):
+    name = models.CharField(max_length=50, unique=True)
+    default_image = models.ImageField(upload_to="vegetables/defaults/", null=True, blank=True)
+
+    def __str__(self):
+        return self.name
+
+
+class VegetableImage(models.Model):
+    vegetable = models.ForeignKey(Vegetable, on_delete=models.CASCADE, related_name="images")
+    image = models.ImageField(upload_to="vegetables/")
+
+    def __str__(self):
+        return f"{self.vegetable.name} Image"
 
 
 class Shop(models.Model):
-    shop_owner = models.ForeignKey(User,on_delete=models.CASCADE)
-    shop_name = models.CharField(max_length=50)
+    shop_owner = models.ForeignKey(User, on_delete=models.CASCADE)
+    name = models.CharField(max_length=50)
     district = models.ForeignKey(District, on_delete=models.CASCADE)
-    rating = models.IntegerField(null=True,max_length=5)
-    image = models.ImageField(null=True,upload_to='shop/',max_length=300)
-    slug = models.SlugField(unique=True,max_length=100)
-    is_available = models.BooleanField(default=False)
-    vegetables = models.ForeignKey(Vegetables,on_delete=models.CASCADE)
-
+    slug = models.SlugField(unique=True, max_length=100, blank=True)
+    # vegetables = models.ManyToManyField(Vegetable, related_name="shops")
+    average_rating = models.FloatField(default=0.0)
+    image = models.ImageField(upload_to="shop/image/",max_length=500)  
+    total_ratings = models.PositiveIntegerField(default=0)  
+    shop_description = models.TextField(null=True)
     def __str__(self):
-        return self.shop_name
-    
+        return self.name
+
+    def save(self, *args, **kwargs):
+        images = ["https://images.stockcake.com/public/7/b/2/7b208ddd-1125-4d86-b25b-87b124f03469_large/rural-farm-landscape-stockcake.jpg","https://images.pexels.com/photos/96715/pexels-photo-96715.jpeg?cs=srgb&dl=pexels-alejandro-barron-21404-96715.jpg&fm=jpg","https://cdn.sanity.io/images/ec9j7ju7/production/f6f10b735cf1c9c7bb494d56af0af099dfd823a5-3884x2594.jpg?w=3840&q=75&fit=clip&auto=format"]
+
+        if not self.slug:
+            self.slug = slugify(f"{self.name}-{self.shop_owner.username}")
+
+        if not self.image:
+            self.image = random.choice(images)
+
+        # if not self.description:
+        #    self.description = "A farm shop offering fresh, locally sourced produce, dairy, and homemade goods straight from the farm. Enjoy organic fruits, vegetables, and artisanal products while supporting local farmers and sustainable practices."
+
+        super().save(*args, **kwargs)
+
+        
     @property
-    def formeted_image(self):
+    def formated_image(self):
 
         if self.image.__str__().startswith(('http://','https://')):
             url = self.image
@@ -41,36 +67,91 @@ class Shop(models.Model):
             
         return url
 
-    def save(self,*args, **kwargs):
-        slug = self.shop_name + self.shop_owner.username
-        self.slug = slugify(slug)
-        super().save(*args, **kwargs)
-    
+    @property
+    def has_products(self):
+        return self.products.filter(quantity__gt=0).exists()
 
-class temp_user(models.Model):
+    def update_rating(self):
+        ratings = self.ratings.all()
+        total_ratings = ratings.count()
+        average_rating = ratings.aggregate(models.Avg("rating"))["rating__avg"] or 0.0
+
+        self.total_ratings = total_ratings
+        self.average_rating = round(average_rating, 2)
+        self.save(update_fields=["total_ratings", "average_rating"])
+
+
+# class ShopImage(models.Model):
+#     shop = models.ForeignKey(Shop, on_delete=models.CASCADE, related_name="images")
+#     image = models.ImageField(upload_to="shop/")
+
+#     @property
+#     def formated_image(self):
+
+#         if self.image.__str__().startswith(('http://','https://')):
+#             url = self.image
+#         else:
+#             url = self.image.url
+            
+#         return url
+
+
+#     def __str__(self):
+#         return f"{self.shop.name} Image"
+
+
+class Rating(models.Model):
+    shop = models.ForeignKey(Shop, on_delete=models.CASCADE, related_name="ratings")
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    rating = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)])
+    title = models.CharField(max_length=100, blank=True, null=True)
+    review = models.TextField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ("shop", "user")  
+
+    def __str__(self):
+        return f"{self.user.username} - {self.rating} stars"
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        self.shop.update_rating()
+
+    def delete(self, *args, **kwargs):
+        super().delete(*args, **kwargs)
+        self.shop.update_rating()
+
+
+class TempUser(models.Model):
     name = models.CharField(max_length=50)
-    username = models.CharField(max_length=50)
-    email = models.TextField()
+    username = models.CharField(max_length=50, unique=True)
+    email = models.EmailField(unique=True)
     contact_number = models.CharField(max_length=10)
     token = models.UUIDField(default=uuid.uuid4, unique=True)
 
-class Product(models.Model):
-    price_per_kg = models.FloatField()
-    shop_name = models.ForeignKey(Shop,on_delete=models.CASCADE)
-    category = models.ForeignKey(Vegetables,on_delete=models.CASCADE)
-    quantity = models.PositiveIntegerField()
-    description = models.TextField(null=False)
-    image = models.ImageField(null=True,max_length=300)
-    is_available = models.BooleanField(default=True)
+    def __str__(self):
+        return self.username
 
-    def save(self,*args, **kwargs):
-        self.is_available = self.quantity > 0
-        if not self.image:
-            self.image = self.category.images  
-        super().save(*args, **kwargs)
+
+class Product(models.Model):
+    shop = models.ForeignKey(Shop, on_delete=models.CASCADE, related_name="products")
+    category = models.ForeignKey(Vegetable, on_delete=models.CASCADE)
+    price_per_kg = models.FloatField(validators=[MinValueValidator(0.1)])
+    quantity = models.PositiveIntegerField(null=False)
+    description = models.TextField()
+    image = models.ImageField(upload_to="products/", null=True, blank=True)
     
+    def save(self, *args, **kwargs):
+        if not self.image:
+            self.image = self.category.default_image 
+
+        if not self.description:
+            self.description = f"Buy this Fresh and high-quality {self.category} at {self.shop}."
+        super().save(*args, **kwargs)
+
     @property
-    def formeted_image(self):
+    def formated_image(self):
 
         if self.image.__str__().startswith(('http://','https://')):
             url = self.image
@@ -78,21 +159,15 @@ class Product(models.Model):
             url = self.image.url
             
         return url
-    
+
     def __str__(self):
-        return f"{self.category.vegetables} - {self.prize_per_kg}"
-    
+        return f"{self.category.name} - {self.price_per_kg}"
+
+
 class Farmer(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     phone = models.CharField(max_length=15, null=True, blank=True)
     address = models.TextField(null=True, blank=True)
 
-    
     def __str__(self):
         return self.user.username
-
-    
-
-
-
-

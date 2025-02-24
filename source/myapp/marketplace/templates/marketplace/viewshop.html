@@ -10,7 +10,7 @@
     <div class="row">
         <!-- Shop Image -->
         <div class="col-md-6">
-            <img src="{{shop.formeted_image}}" class="img-fluid shop-image" alt="Shop Image">
+            <img src="{{shop.formated_image}}" class="img-fluid shop-image" alt="Shop Image">
         </div>
         
         <!-- Shop Details -->
@@ -35,11 +35,11 @@
         {% for product in page_obj %}
         <div class="col-md-4">
             <div class="card product-card shadow">
-                <img src="{{product.formeted_image}}" class="card-img-top product-img" alt="Tomato">
+                <img src="{{product.formated_image}}" class="card-img-top product-img" alt="Tomato">
                 <div class="card-body text-center">
                     <h5 class="card-title">{{product.category}}</h5>
                     <p class="card-text"><strong>₹{{product.price_per_kg}}</strong></p>
-                    <a href="{% url "marketplace:showproduct" shopname=shop.shop_name product=product.category %}" class="btn btn-success btn-rounded">View Product</a>
+                    <a href="" class="btn btn-success btn-rounded">View Product</a>
                 </div>
             </div>
         </div>
