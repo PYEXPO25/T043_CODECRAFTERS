@@ -169,10 +169,9 @@ class Product(models.Model):
             
         return url
     
-    def product_name(self):
-        name = self.category.name + self.shop.name
+    
 
-        return name
+        
 
     def __str__(self):
         return f"{self.category.name} - {self.price_per_kg}"

@@ -149,5 +149,5 @@ def logout_view(request):
     return redirect(reverse("marketplace:index"))
 
 def showproduct(request,shopname,product):
-    
+    product = Product.objects.get(slug=product)
     return render(request,'marketplace/productdetail.html',{'shop':shopname,'product':product})

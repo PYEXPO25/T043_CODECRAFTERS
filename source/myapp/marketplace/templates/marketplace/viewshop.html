@@ -36,11 +36,11 @@
         <div class="col-md-4">
             <div class="card product-card shadow">
                 <img src="{{product.formated_image}}" class="card-img-top product-img" alt="Tomato">
-                {{product.product_name}}
+                
                 <div class="card-body text-center">
                     <h5 class="card-title">{{product.category}}</h5>
                     <p class="card-text"><strong>₹{{product.price_per_kg}}</strong></p>
-                    <a href="" class="btn btn-success btn-rounded">View Product</a>
+                    <a href="{% url "marketplace:showproduct" shopname=product.shop.name product=product.slug %}" class="btn btn-success btn-rounded">View Product</a>
 
                     {% comment %} {% url "marketplace:showproduct" shopname=shop.name product=product.product_name%} {% endcomment %}
                 </div>
