@@ -1,167 +1,45 @@
-
 {% extends "marketplace/includes/base.html" %}
 
-{%{% block content %}
-  <body style="background-color: lightgreen">
-    <header class="bg-success p-3">
-      <h1 class="text-white">Create Your Own Shop</h1>
-    </header>
-    <div class="container">
-      <div class="row mb-3">
-        <div class="col-12 mt-3">
-          <div class="card">
-            <div class="row">
-              <div class="col-6">
-                <img class="img-fluid rounded h-100 w-100" src="" alt="" />
-              </div>
-              <div class="col">
-                <div class="card-body">
-                  <h4 class="card-title">Shop Name</h4>
-                  <p class="card-text">
-                    We are frequently sell
-                    <span
-                      class="d-inline-block bg-danger p-0.8 px-1 rounded m-1"
-                      >Tomato</span
-                    >
-                    <span
-                      class="d-inline-block bg-secondary p-0.8 px-1 rounded m-1"
-                      >Potato</span
-                    >
-                    <span
-                      class="d-inline-block bg-warning p-0.8 px-1 rounded m-1"
-                      >Onion</span
-                    >
-                    <span class="d-inline-block bg-info p-0.8 px-1 rounded m-1"
-                      >Brinjal</span
-                    >
-                  </p>
+{% load static %}
 
-                  <div class="d-flex justify-content-end mt-2">
-                    <div class="rating">
-                      <input type="checkbox" name="star" id="star1" /><label
-                        for="star1"
-                        >&#9733;</label
-                      >
-                    </div>
-                  </div>
-                  <div
-                    class="d-flex justify-content-between align-items-center"
-                  >
-                    <a href="#" class="btn btn-primary m-2">View shop</a>
-                    <a href="#" class="btn btn-primary">Submit Rating</a>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="row mb-3">
-        <div class="col-12 mt-3">
-          <div class="card">
-            <div class="row">
-              <div class="col-6">
-                <img class="img-fluid rounded h-100 w-100" src="" alt="" />
-              </div>
-              <div class="col">
-                <div class="card-body">
-                  <h4 class="card-title">Shop Name</h4>
-                  <p class="card-text">
-                    We are frequently sell
-                    <span
-                      class="d-inline-block bg-danger p-0.8 px-1 rounded m-1"
-                      >Tomato</span
-                    >
-                    <span
-                      class="d-inline-block bg-secondary p-0.8 px-1 rounded m-1"
-                      >Potato</span
-                    >
-                    <span
-                      class="d-inline-block bg-warning p-0.8 px-1 rounded m-1"
-                      >Onion</span
-                    >
-                    <span class="d-inline-block bg-info p-0.8 px-1 rounded m-1"
-                      >Brinjal</span
-                    >
-                  </p>
+{% block style %}
+    <link rel="stylesheet" href="{% static "marketplace/myshops.css" %}" />
+{% endblock style %}
 
-                  <div class="d-flex justify-content-end mt-2">
-                    <div class="rating">
-                      <input type="checkbox" name="star" id="star2" /><label
-                        for="star2"
-                        >&#9733;</label
-                      >
-                    </div>
-                  </div>
-                  <div
-                    class="d-flex justify-content-between align-items-center"
-                  >
-                    <a href="#" class="btn btn-primary m-2">View shop</a>
-                    <a href="#" class="btn btn-primary">Submit Rating</a>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="row mb-3">
-        <div class="col-12 mt-3">
-          <div class="card">
-            <div class="row">
-              <div class="col-6">
-                <img class="img-fluid rounded h-100 w-100" src="" alt="" />
-              </div>
-              <div class="col">
-                <div class="card-body">
-                  <h4 class="card-title">Shop Name</h4>
-                  <p class="card-text">
-                    We are frequently sell
-                    <span
-                      class="d-inline-block bg-danger p-0.8 px-1 rounded m-1"
-                      >Tomato</span
-                    >
-                    <span
-                      class="d-inline-block bg-secondary p-0.8 px-1 rounded m-1"
-                      >Potato</span
-                    >
-                    <span
-                      class="d-inline-block bg-warning p-0.8 px-1 rounded m-1"
-                      >Onion</span
-                    >
-                    <span class="d-inline-block bg-info p-0.8 px-1 rounded m-1"
-                      >Brinjal</span
-                    >
-                  </p>
+{% block content %}
+    {% include "marketplace/includes/navbar.html" %}
 
-                  <div class="d-flex justify-content-end mt-2">
-                    <div class="rating">
-                      <input type="checkbox" name="star" id="star3" /><label
-                        for="star3"
-                        >&#9733;</label
-                      >
-                    </div>
-                  </div>
-                  <div
-                    class="d-flex justify-content-between align-items-center"
-                  >
-                    <a href="#" class="btn btn-primary m-2">View shop</a>
-                    <a href="#" class="btn btn-primary">Submit Rating</a>
-                  </div>
+    <div class="container mt-4">
+        <h2 class="text-center mb-4 section-title">My Shops</h2>
+        
+        {% for shop in myshops %}
+            <div class="shop-card">
+                <div class="shop-image">
+                    <img src="{{ shop.formated_image }}" alt="{{ shop.name }}">
                 </div>
-              </div>
+                <div class="shop-details">
+                    <h3 class="shop-name">{{ shop.name }}</h3>
+                    <p class="shop-description">{{ shop.shop_description|truncatechars:300 }}</p>
+
+                    
+
+                    <div class="shop-buttons d-flex justify-content-between">
+                        <a href="#" class="btn btn-primary rounded-pill view">View Shop</a>
+                        <a href="#" class="btn btn-success rounded-pill  add-product">Add Product</a>
+                        <div class="shop-rating">
+                          <span class="stars" data-rating="{{ shop.rating }}"></span>
+                          <span class="rating-value">Rating:⭐⭐⭐⭐⭐({{ shop.rating }}/5)</span>
+                      </div>
+                    </div>
+                    
+                </div>
+                
             </div>
-          </div>
-        </div>
-      </div>
+        {% empty %}
+            <div class="no-shop">
+                <p>You don’t have a shop yet.</p>
+                <a href="#" class="btn btn-create">Create a New Shop</a>
+            </div>
+        {% endfor %}
     </div>
-{% endblock content %}%}
-    {% comment %} <footer class="d-flex justify-content-center m-4">
-      <a
-        href="#"
-        style="background-color: #006400; border-color: #006400"
-        class="btn btn-lg"
-        ><h1 class="text-white">Create a new shop</h1></a
-      >
-    </footer> {% endcomment %}
-
+{% endblock content %}

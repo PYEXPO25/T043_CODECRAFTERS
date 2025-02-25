@@ -209,4 +209,8 @@ def showproduct(request, shopslug, product):
 def myshops(request):
 
     myshops = Shop.objects.filter(shop_owner = request.user)
-    return render(request,"marketplace/myshops.html",{})
+    return render(request,"marketplace/myshops.html",{"myshops":myshops})
+
+def addproduct(requst):
+
+    pass
