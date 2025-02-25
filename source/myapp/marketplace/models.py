@@ -17,6 +17,16 @@ class Vegetable(models.Model):
     name = models.CharField(max_length=50, unique=True)
     default_image = models.ImageField(upload_to="vegetables/defaults/", null=True, blank=True)
 
+    @property
+    def formated_image(self):
+
+        if self.default_image.__str__().startswith(('http://','https://')):
+            url = self.default_image
+        else:
+            url = self.default_image.url
+            
+        return url
+
     def __str__(self):
         return self.name
 
@@ -24,6 +34,8 @@ class Vegetable(models.Model):
 class VegetableImage(models.Model):
     vegetable = models.ForeignKey(Vegetable, on_delete=models.CASCADE, related_name="images")
     image = models.ImageField(upload_to="vegetables/")
+
+    
 
     def __str__(self):
         return f"{self.vegetable.name} Image"

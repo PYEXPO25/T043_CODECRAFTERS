@@ -7,7 +7,48 @@
 {% endblock style %}
 
 {% block content %}
-    {% include "marketplace/includes/navbar.html" %}
+<nav class="navbar navbar-expand-lg navbar-dark bg-success">
+    <div class="container">
+        <a class="navbar-brand" href="#">🌿 Farmer Bazar</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link btn btn-info text-white px-3 py-1 rounded-pill" href="{% url "marketplace:index" %}">
+                        Home
+                    </a>
+                </li>
+                {% csrf_token %}
+                {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link btn btn-info text-white px-3 py-1 rounded-pill" href="{% url "marketplace:myshops" %}">
+                            My Shops
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link btn btn-danger text-white px-3 py-1 rounded-pill" href="{% url "marketplace:log_out" %}">
+                            
+                            Logout ({{ request.user.username }})
+                        </a>
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link btn btn-success text-white px-3 py-1 rounded-pill" href="{% url 'marketplace:register' %}">
+                            Register
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link btn btn-primary text-white px-3 py-1 rounded-pill" href="{% url 'marketplace:login' %}">
+                            Login
+                        </a>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav>
 
     <div class="container mt-4">
         <h2 class="text-center mb-4 section-title">My Shops</h2>
@@ -25,7 +66,7 @@
 
                     <div class="shop-buttons d-flex justify-content-between">
                         <a href="#" class="btn btn-primary rounded-pill view">View Shop</a>
-                        <a href="#" class="btn btn-success rounded-pill  add-product">Add Product</a>
+                        <a href="{% url 'marketplace:addproduct' shopname=shop.name %}" class="btn btn-success rounded-pill  add-product">Add Product</a>
                         <div class="shop-rating">
                           <span class="stars" data-rating="{{ shop.rating }}"></span>
                           <span class="rating-value">Rating:⭐⭐⭐⭐⭐({{ shop.rating }}/5)</span>
@@ -42,4 +83,5 @@
             </div>
         {% endfor %}
     </div>
+    {% include "marketplace/includes/footer.html" %}
 {% endblock content %}

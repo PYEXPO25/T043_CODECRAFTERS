@@ -211,6 +211,8 @@ def myshops(request):
     myshops = Shop.objects.filter(shop_owner = request.user)
     return render(request,"marketplace/myshops.html",{"myshops":myshops})
 
-def addproduct(requst):
+def addproduct(requst,shopname):
 
-    pass
+    vegetables = Vegetable.objects.all()
+
+    return render(requst,"marketplace/addproduct.html",{'vegetables':vegetables})
