@@ -13,6 +13,7 @@ from django.contrib.auth.models import User
 import uuid
 from django.urls import reverse
 from django.db.models import Q
+from django.utils.translation import gettext as _
 # Create your views here.
 
 def index(request):

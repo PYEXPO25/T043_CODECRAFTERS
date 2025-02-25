@@ -81,7 +81,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'market_data',
         'USER': 'root',
-        'PASSWORD': 'zoro@1324',
+        'PASSWORD': 'mysql_password',
         'HOST': 'localhost',  # Change if using a remote DB
         'PORT': '3306',  # Default MySQL port
         'OPTIONS': {
@@ -114,7 +114,11 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
 
+
+
+
 LANGUAGE_CODE = 'en-us'
+
 
 TIME_ZONE = 'UTC'
 
@@ -130,8 +134,6 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
-
-
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
