@@ -168,6 +168,10 @@ class Product(models.Model):
         if not self.slug:
             slug = self.shop.name+"-"+self.shop.shop_owner.username+"-"+self.category.name
             self.slug = slugify(slug)
+        if self.quantity <= 0:
+            self.delete()  
+        else:
+            super().save(*args, **kwargs)
         super().save(*args, **kwargs)
 
         

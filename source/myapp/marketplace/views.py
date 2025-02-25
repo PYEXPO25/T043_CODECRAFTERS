@@ -1,6 +1,6 @@
 from django.shortcuts import render,redirect, get_object_or_404
 from django.http.response import HttpResponse,HttpResponseRedirect
-from . forms import RegisterForm,SetPasswordForm,LoginForm,OrderForm
+from . forms import RegisterForm,SetPasswordForm,LoginForm,OrderForm,AddProductForm
 from django.contrib.auth import authenticate,login,logout
 from django.core.mail import send_mail
 from django.contrib.auth.hashers import make_password
@@ -211,8 +211,23 @@ def myshops(request):
     myshops = Shop.objects.filter(shop_owner = request.user)
     return render(request,"marketplace/myshops.html",{"myshops":myshops})
 
-def addproduct(requst,shopname):
+def addproduct(request,shopname):
+    shop = Shop.objects.get(name=shopname)
+    form = AddProductForm()
+    if request.method == "POST":
+        print("POST DATA:", request.POST)
 
+        form = AddProductForm(request.POST,request.FILES)
+        print(form.errors)
+
+        if form.is_valid():
+            print("Valid")
+            product = form.save(commit=False)
+            product.shop = shop
+            product.shop_description = f"Buy this Fresh and high-quality {form.cleaned_data['category']} at {shop.name}."
+            product.save()
+            messages.success(request,"Shop has been Created!")
+            return redirect(reverse('marketplace:shop', kwargs={'slug': shop.slug}))  # Change to your success URL
     vegetables = Vegetable.objects.all()
 
-    return render(requst,"marketplace/addproduct.html",{'vegetables':vegetables})
+    return render(request,"marketplace/addproduct.html",{'vegetables':vegetables,'form':form})

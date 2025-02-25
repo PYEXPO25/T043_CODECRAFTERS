@@ -1,13 +1,39 @@
 {% if messages %}
-            
-    <div class="container mt-3">
-        <div class="d-flex justify-content-center">
-            {% for message in messages %}
-                <div class="alert {% if message.tags == "success" %} alert-success {% else %} alert-danger{% endif %}  alert-dismissible fade show" role="alert"> 
-                         {{message}}
-            {% endfor %} <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+<div class="modal fade show d-block" id="messageModal" tabindex="-1" aria-labelledby="messageModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg">
+            <div class="modal-header text-white" style="background-color: #28a745;">
+                <h4 class="modal-title w-100 text-center">Success</h4>
+                <button type="button" class="btn-close" onclick="closeModal()" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center p-4">
+                {% for message in messages %}
+                    <p class="fs-4 fw-bold text-dark">{{ message }}</p>
+                {% endfor %}
+            </div>
+            <div class="modal-footer justify-content-center">
+                <button type="button" class="btn btn-lg text-white" style="background-color: #218838;" onclick="closeModal()">OK</button>
             </div>
         </div>
-    </div> 
+    </div>
+</div>
 
+<style>
+    .modal {
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+        background: rgba(0, 0, 0, 0.6);
+    }
+    .modal-content {
+        border-radius: 15px;
+    }
+</style>
+
+<script>
+    function closeModal() {
+        document.getElementById("messageModal").classList.remove("show", "d-block");
+        document.getElementById("messageModal").classList.add("d-none");
+    }
+</script>
 {% endif %}
