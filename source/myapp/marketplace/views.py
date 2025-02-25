@@ -8,7 +8,7 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.core.paginator import Paginator
 from django.template.loader import render_to_string
 from django.contrib import messages
-from .models import Product, Shop, TempUser,Vegetable
+from .models import Product, Shop, TempUser,Vegetable,District
 from django.contrib.auth.models import User
 import uuid
 from django.urls import reverse
@@ -18,10 +18,9 @@ from django.utils.translation import gettext as _
 
 def index(request):
     
-    search = request.GET.get('query', '')
-    
-    if search:
-        return redirect(reverse("marketplace:search"))
+    query = request.GET.get('q', '')  # Get search query from request
+    if query:
+        return redirect(f"{reverse('search_results')}?q={query}")
     
     shops = Shop.objects.filter()
     products = Product.objects.all()
@@ -42,6 +41,7 @@ def index(request):
 
 def search_results(request):
     query = request.GET.get('q', '')
+    
     selected_categories = request.GET.getlist('category')
     selected_districts = request.GET.getlist('district')
     sort_option = request.GET.get('sort', 'price_low')
@@ -49,10 +49,12 @@ def search_results(request):
     products = Product.objects.all()
     
     if query:
+        
         products = products.filter(
-            Q(name__icontains=query) |
+            
             Q(shop__name__icontains=query) |
-            Q(category__name__icontains=query)
+            Q(category__name__icontains=query)|
+            Q(shop__district__name__icontains=query)
         )
     
     if selected_categories:
@@ -61,19 +63,16 @@ def search_results(request):
     if selected_districts:
         products = products.filter(shop__district__in=selected_districts)
     
-    if sort_option == 'price_low':
+    if sort_option == 'price_asc':
         products = products.order_by('price_per_kg')
-    elif sort_option == 'price_high':
+    elif sort_option == 'price_desc':
         products = products.order_by('-price_per_kg')
-    elif sort_option == 'name_az':
-        products = products.order_by('name')
-    elif sort_option == 'name_za':
-        products = products.order_by('-name')
+    
     
     categories = Vegetable.objects.all()
-    districts = Shop.objects.values_list('district', flat=True).distinct()
+    districts = District.objects.all()
     
-    return render(request, 'marketplace/search_results.html', {
+    return render(request, 'marketplace/search.html', {
         'products': products,
         'query': query,
         'categories': categories,
@@ -211,4 +210,10 @@ def showproduct(request, shopslug, product):
 def myshops(request):
 
     myshops = Shop.objects.filter(shop_owner = request.user)
-    return render(request,"marketplace/myshops.html",{})
+    return render(request,"marketplace/myshops.html",{"myshops":myshops})
+
+def addproduct(requst,shopname):
+
+    vegetables = Vegetable.objects.all()
+
+    return render(requst,"marketplace/addproduct.html",{'vegetables':vegetables})

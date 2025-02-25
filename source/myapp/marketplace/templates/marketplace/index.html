@@ -18,13 +18,14 @@
             <p class="fw-semibold fs-4">Fresh & Organic Produce Directly from Farmers</p>
             <div class="container d-flex justify-content-center">
                 <div class="w-75">
-                    <form method="GET" action="{% url 'marketplace:index' %}">
-                        <input class="form-control mb-2 rounded-pill p-3" name="query" type="search" placeholder="Search for shops or products" aria-label="Search">
+                    <form method="GET" action="{% url 'marketplace:search' %}">
+                        <input class="form-control mb-2 rounded-pill p-3" name="q" type="search" placeholder="Search for shops or products" aria-label="Search">
                         <div class="text-center">
                             <button class="btn btn-success px-4 py-2 rounded-pill" type="submit">Search</button>
                         </div>
                     </form>
                 </div>
+                
             </div>
             
             
@@ -38,7 +39,7 @@
             {% for shop in page_obj %}
     <div class="col-md-4 p-2">
         <div class="card shadow">
-            <img src="{{shop.image}}" class="card-img-top" alt="Shop 1">
+            <img src="{{shop.formated_image}}" class="card-img-top" alt="Shop 1">
             <div class="card-body">
                 <h5 class="card-title">{{shop.shop_name}}</h5>
                 <p class="card-text"> </p>
@@ -46,7 +47,7 @@
 <a href="/?query={{shop.vegetables.vegetable}}">{{ shop.vegetables.vegetable }}</a> <br>
 
 <strong>District:</strong> 
-<a href="/?query={{shop.district.name}}">{{ shop.district.name }}</a> <br>
+<a class='btn btn-secondary btn-sm rounded-pill' href="/?query={{shop.district.name}}">{{ shop.district.name }}</a> <br>
                 
                 <p><strong>Description:</strong>{{shop.shop_description|truncatechars:36}}</p>
                 <p><strong>Review:</strong> ⭐⭐⭐⭐☆</p>
