@@ -1,8 +1,6 @@
 {% extends "marketplace/includes/base.html" %}
 {% load static %}
 
-
-
 {% block content %}
 
     {% include "marketplace/includes/navbar.html" %}
@@ -19,6 +17,7 @@
                 <h2 class="fw-bold">{{product.category}}</h2>
                 <p class="text-muted">{{product.description}}</p>
                 <h4 class="text-success">₹{{product.price_per_kg}} per kg</h4>
+                
                 <p class="mb-0">
                     <div class="d-inline-flex align-items-center">
                         <strong class="me-2">Shop:</strong> 
@@ -28,38 +27,93 @@
                             <a href="{% url 'marketplace:shop' slug=shop.slug %}" class="text-decoration-none text-dark fw-bold">{{ shop }}</a>
                         </div>
                     </div>
-                    
+                </p>
+                
                 <p><strong>Location:</strong> {{shop.district.name}}</p>
                 <p><strong>Available Quantity:</strong> {{product.quantity}} Kg</p>
+                
                 {% if shop.shop_owner == request.user %}
                     <div class="d-flex justify-content-center gap-3">
-                        
                         <a href="{% url 'marketplace:editproduct' shopslug=product.shop.slug product=product.slug %}" class="btn btn-success rounded-pill px-4">
                             Edit Product
                         </a>
+
+                        <button class="btn btn-danger rounded-pill px-4" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                            ❌ Remove Product
+                        </button>
                     </div>
-                    
                 {% else %}
-                    <form class="d-flex flex-column align-items-center" method="POST">
+                    <form id="buyForm" class="d-flex flex-column align-items-center" method="POST">
+                        {% csrf_token %}
                         <div class="mb-3 w-100 text-center">
-                            {% csrf_token %}
                             <label for="quantity" class="form-label">Select Quantity (kg):</label>
-                            <input type="number" name="quantity" class="form-control w-50 mx-auto" id="quantity" >
+                            {% for error in form.quantity.errors %}
+                                <p class="text-danger">{{ error }}</p>
+                            {% endfor %}
+                            <input type="number" name="quantity" class="form-control w-50 mx-auto" id="quantity">
                         </div>
                         
-                        <button type="submit" class="btn btn-danger px-4 py-2 rounded-pill">🚀 Buy Now</button>
+                        <button type="button" class="btn btn-danger px-4 py-2 rounded-pill" data-bs-toggle="modal" data-bs-target="#confirmModal">
+                            🚀 Buy Now
+                        </button>
                     </form>
                 {% endif %}
-                
                 
             </div>
         </div>
 
         {% include "marketplace/includes/messages.html" %}
 
-<footer class="bg-success text-white text-center p-3 fixed-bottom">
-    <p>© 2025 Farmer Bazar | Connecting Farmers & Consumers</p>
-</footer>
-        
+        <footer class="bg-success text-white text-center p-3 fixed-bottom">
+            <p>© 2025 Farmer Bazar | Connecting Farmers & Consumers</p>
+        </footer>
+
+    </div>
+
+    <!-- Buy Now Confirmation Modal -->
+    <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title fw-bold text-danger" id="confirmModalLabel">Confirm Order</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <p class="fs-5">Do you want to place the order at <span class="fw-bold text-success">{{ shop }}</span>?</p>
+                </div>
+                <div class="modal-footer justify-content-center">
+                    <button type="button" class="btn btn-danger px-4" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-success px-4" onclick="submitForm()">Yes, Place Order</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Remove Product Confirmation Modal -->
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title fw-bold text-danger" id="deleteModalLabel">Confirm Deletion</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <p class="fs-5">Are you sure you want to remove <span class="fw-bold text-success">{{ product.category }}</span> from your shop?</p>
+                </div>
+                <div class="modal-footer justify-content-center">
+                    <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">Cancel</button>
+                    <a href="{% url 'marketplace:removeproduct' shopslug=product.shop.slug product=product.slug %}" class="btn btn-danger px-4">
+                        Yes, Remove
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function submitForm() {
+            document.getElementById("buyForm").submit();
+        }
+    </script>
 
 {% endblock content %}

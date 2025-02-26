@@ -23,7 +23,16 @@
             <p><strong>Owner:</strong> {{shop.shop_owner}}</p>
             <p><strong>Location:</strong> {{shop.district}}</p>
             <p><strong>Contact:</strong> {{shop.shop_owner.email}}</p>
-            <p class="rating">⭐⭐⭐⭐☆ (4.5/5)</p>
+            <p><strong>Rating:</strong> 
+                {% for i in "12345"|make_list %}
+                    {% if forloop.counter <= shop.average_rating %}
+                        ⭐
+                    {% else %}
+                        ☆
+                    {% endif %}
+                {% endfor %}
+                ({{ shop.average_rating }}/5)
+            </p>
             <p>{{shop.shop_description}}</p>
 
             <a href="#" class="btn btn-success btn-rounded">Contact Shop</a>

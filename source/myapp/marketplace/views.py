@@ -276,8 +276,16 @@ def edit_product(request, shopslug, product):
         form = EditProductForm(request.POST, request.FILES, instance=product)
         if form.is_valid():
             form.save()
+            messages.success(request, "Product detail updated successfully.")
             return redirect('marketplace:showproduct', shop.slug, product.slug)  # Redirect after successful edit
     else:
         form = EditProductForm(instance=product)
 
     return render(request, 'marketplace/editproduct.html', {'form': form, 'product': product})
+
+def remove_product(request, shopslug, product):
+    product_instance = get_object_or_404(Product, shop__slug=shopslug, slug=product)
+    product_instance.is_available =False
+    product_instance.save()
+    messages.success(request, "Product removed successfully.")
+    return redirect("marketplace:shop", slug=shopslug)

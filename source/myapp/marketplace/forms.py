@@ -48,7 +48,7 @@ class SetPasswordForm(forms.Form):
         
 
 class OrderForm(forms.ModelForm):
-    quantity = forms.IntegerField(min_value=1)
+    quantity = forms.IntegerField(min_value=1,required=True)
     
 
     class Meta:
