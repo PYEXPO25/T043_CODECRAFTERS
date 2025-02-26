@@ -1,3 +1,39 @@
+<head>
+    <style>
+        /* Hide the default Google Translate icon */
+        .goog-te-gadget img {
+            display: none !important;
+        }
+        
+        /* Customize the dropdown */
+        .goog-te-gadget-simple {
+            display: flex !important;
+            align-items: center;
+            gap: 5px;
+            background-color: #28a745 !important; /* Green background */
+            color: white !important;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            border: 1px solid white;
+        }
+        
+        /* Customize the text inside the Google Translate widget */
+        .goog-te-gadget-simple span {
+            font-size: 14px;
+            font-weight: bold;
+        }
+        
+        /* Add a custom globe icon before the text */
+        .goog-te-gadget-simple:before {
+            content: "🌍"; /* Globe emoji */
+            font-size: 16px;
+            margin-right: 5px;
+        }
+        </style>
+        
+</head>
 <nav class="navbar navbar-expand-lg navbar-dark bg-success">
     <div class="container">
         <a class="navbar-brand" href="#">🌿 Farmer Bazar</a>
