@@ -46,7 +46,7 @@ def search_results(request):
     selected_districts = request.GET.getlist('district')
     sort_option = request.GET.get('sort', 'price_low')
     
-    products = Product.objects.all()
+    products = Product.objects.filter(is_available = True)
     
     if query:
         
