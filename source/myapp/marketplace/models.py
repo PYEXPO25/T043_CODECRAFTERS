@@ -159,6 +159,7 @@ class Product(models.Model):
     image = models.ImageField(upload_to="products/", null=True, blank=True)
     slug = models.SlugField(max_length=100)
     is_available = models.BooleanField(default=True)
+    added_on = models.DateField(auto_now_add=True)
     def save(self, *args, **kwargs):
         if not self.image:
             self.image = self.category.default_image 
