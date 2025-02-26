@@ -47,9 +47,9 @@ class Shop(models.Model):
     district = models.ForeignKey(District, on_delete=models.CASCADE)
     slug = models.SlugField(unique=True, max_length=100, blank=True)
     # vegetables = models.ManyToManyField(Vegetable, related_name="shops")
-    average_rating = models.FloatField(default=0.0)
+    
     image = models.ImageField(upload_to="shop/image/",max_length=500)  
-    total_ratings = models.PositiveIntegerField(default=0)  
+    
     shop_description = models.TextField(null=True)
     def __str__(self):
         return self.name
@@ -83,18 +83,9 @@ class Shop(models.Model):
             
         return url
 
-    @property
-    def has_products(self):
-        return self.products.filter(quantity__gt=0).exists()
+    
 
-    def update_rating(self):
-        ratings = self.ratings.all()
-        total_ratings = ratings.count()
-        average_rating = ratings.aggregate(models.Avg("rating"))["rating__avg"] or 0.0
-
-        self.total_ratings = total_ratings
-        self.average_rating = round(average_rating, 2)
-        self.save(update_fields=["total_ratings", "average_rating"])
+    
 
 
 # class ShopImage(models.Model):
@@ -120,23 +111,24 @@ class Rating(models.Model):
     shop = models.ForeignKey(Shop, on_delete=models.CASCADE, related_name="ratings")
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     rating = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)])
-    title = models.CharField(max_length=100, blank=True, null=True)
     review = models.TextField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        unique_together = ("shop", "user")  
+        unique_together = ("shop", "user")
 
     def __str__(self):
         return f"{self.user.username} - {self.rating} stars"
 
-    def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
-        self.shop.update_rating()
+    @property
+    def average_rating(self):
+        avg = self.shop.ratings.aggregate(avg_rating=models.Avg("rating"))["avg_rating"]
+        return round(avg, 2) if avg else 0
 
-    def delete(self, *args, **kwargs):
-        super().delete(*args, **kwargs)
-        self.shop.update_rating()
+
+    
+
+    
 
 
 class TempUser(models.Model):
