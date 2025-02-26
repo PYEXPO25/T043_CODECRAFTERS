@@ -65,11 +65,19 @@
                     
 
                     <div class="shop-buttons d-flex justify-content-between">
-                        <a href="#" class="btn btn-primary rounded-pill view">View Shop</a>
+                        <a href="{% url 'marketplace:shop' slug=shop.slug %}" class="btn btn-primary rounded-pill view">View Shop</a>
                         <a href="{% url 'marketplace:addproduct' shopname=shop.name %}" class="btn btn-success rounded-pill  add-product">Add Product</a>
                         <div class="shop-rating">
-                          <span class="stars" data-rating="{{ shop.rating }}"></span>
-                          <span class="rating-value">Rating:⭐⭐⭐⭐⭐({{ shop.rating }}/5)</span>
+                            <p><strong>Rating:</strong> 
+                                {% for i in "12345"|make_list %}
+                                    {% if forloop.counter <= shop.average_rating %}
+                                        ⭐
+                                    {% else %}
+                                        ☆
+                                    {% endif %}
+                                {% endfor %}
+                                ({{ shop.average_rating }}/5)
+                            </p>
                       </div>
                     </div>
                     

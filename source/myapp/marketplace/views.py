@@ -164,8 +164,8 @@ def login_view(request):
 
 def view_shop(request,slug):
     shop = Shop.objects.get(slug=slug)
-    products = Product.objects.filter(shop=shop)
-    products.filter(is_available = True)
+    products = Product.objects.filter(shop=shop,is_available = True)
+    
     paginator = Paginator(products,3)
     page_num = request.GET.get("page")
     page_obj = paginator.get_page(page_num)
@@ -229,7 +229,7 @@ def showproduct(request, shopslug, product):
 
         return render(request, 'marketplace/productdetail.html', {'shop': shop, 'product': product, 'form': form})
     else:
-        return redirect(reverse('marketplace:index'))
+        return redirect(reverse('marketplace:shop', kwargs={'slug': shop.slug})) 
 
 
 

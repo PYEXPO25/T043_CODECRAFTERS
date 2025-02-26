@@ -106,7 +106,7 @@
                   <span class="text-danger">{% for error in form.shop_description.errors %}{{ error }}{% endfor %}</span>
                 {% endif %}
               </label>
-              <textarea class="form-control" rows="5" id="description" name="shop_description">{{ form.shop_description.value }}</textarea>
+              <textarea class="form-control" rows="5" id="description" name="shop_description">{{ form.shop_description.value|default:"" }}</textarea>
             </div>
             
             <div class="form-group">
