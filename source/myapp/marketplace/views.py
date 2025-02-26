@@ -8,7 +8,7 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.core.paginator import Paginator
 from django.template.loader import render_to_string
 from django.contrib import messages
-from .models import Product, Shop, TempUser,Vegetable,District
+from .models import Product, Shop, TempUser,Vegetable,District,Order
 from django.contrib.auth.models import User
 import uuid
 from django.urls import reverse
@@ -165,6 +165,7 @@ def login_view(request):
 def view_shop(request,slug):
     shop = Shop.objects.get(slug=slug)
     products = Product.objects.filter(shop=shop)
+    products.filter(is_available = True)
     paginator = Paginator(products,3)
     page_num = request.GET.get("page")
     page_obj = paginator.get_page(page_num)
@@ -182,28 +183,35 @@ def showproduct(request, shopslug, product):
     product = get_object_or_404(Product, slug=product)
     shop = get_object_or_404(Shop, slug=shopslug)
     form = OrderForm()
+    if product.is_available:
+        if request.method == 'POST':
+            form = OrderForm(request.POST)
+            if form.is_valid():
+                order = form.save(commit=False)
+                order.user = request.user
+                order.product = product
+                order.total_price = order.quantity * product.price_per_kg
+                order.shop = shop
+                
+                if product.quantity >= order.quantity:
+                    product.quantity -= order.quantity
+                    product.save()
 
-    if request.method == 'POST':
-        form = OrderForm(request.POST)
-        if form.is_valid():
-            order = form.save(commit=False)
-            order.user = request.user
-            order.product = product
-            order.total_price = order.quantity * product.price_per_kg
+                    order.save()
+                    messages.success(request, "Your order has been successfully placed!")
+                    if product.quantity == 0:
+                        product.is_available = False
+                        product.save()
+                        return redirect(reverse("marketplace:myorders"))
+                    
+                    return redirect(reverse("marketplace:myorders"))
 
-            
-            if product.quantity >= order.quantity:
-                product.quantity -= order.quantity
-                product.save()
+                else:
+                    messages.error(request, "Insufficient stock available!")
 
-                order.save()
-                messages.success(request, "Your order has been successfully placed!")
-                return redirect(reverse("marketplace:showproduct", kwargs={"shopslug": shopslug, "product": product.slug}))
-
-            else:
-                messages.error(request, "Insufficient stock available!")
-
-    return render(request, 'marketplace/productdetail.html', {'shop': shop, 'product': product, 'form': form})
+        return render(request, 'marketplace/productdetail.html', {'shop': shop, 'product': product, 'form': form})
+    else:
+        return redirect(reverse('marketplace:index'))
 
 
 
@@ -232,3 +240,12 @@ def addproduct(request,shopname):
     vegetables = Vegetable.objects.all()
 
     return render(request,"marketplace/addproduct.html",{'vegetables':vegetables,'form':form})
+
+def myorders(request):
+    orders = Order.objects.filter(user=request.user)
+    return render(request,"marketplace/myorders.html",{'orders':orders})
+
+def deleteproduct(request,productslug):
+    product = Product.objects.get(slug=productslug)
+    product.delete()
+    return redirect(reverse("marketplace:myorders")) 

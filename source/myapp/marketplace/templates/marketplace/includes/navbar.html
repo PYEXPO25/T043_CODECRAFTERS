@@ -20,6 +20,11 @@
                         </a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link btn btn-danger text-white px-3 py-1 rounded-pill" href="{% url "marketplace:myorders" %}">
+                            My orders
+                        </a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link btn btn-danger text-white px-3 py-1 rounded-pill" href="{% url "marketplace:log_out" %}">
                             
                             Logout ({{ request.user.username }})

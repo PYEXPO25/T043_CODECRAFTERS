@@ -1,0 +1,48 @@
+{% extends "marketplace/includes/base.html" %}
+
+{% load static %}
+
+{% block static %}
+    <link rel="stylesheet" href="{% static 'marketplace/orders.css' %}" />
+{% endblock static %}
+
+{% block content %}
+    {% include "marketplace/includes/navbar.html" %}
+
+    <div class="container mt-4">
+        {% include "marketplace/includes/messages.html" %}
+        <h2 class="text-center">Order History</h2>
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover mt-3">
+                <thead class="table-success">
+                    <tr>
+                        <th scope="col">Order ID</th>
+                        <th scope="col">User</th>
+                        <th scope="col">Product</th>
+                        <th scope="col">Quantity</th>
+                        <th scope="col">Total Price</th>
+                        <th scope="col">Shop</th>
+                        <th scope="col">Order Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order in orders %}
+                        <tr>
+                            <td>{{ order.id }}</td>
+                            <td>{{ order.user.username }}</td>
+                            <td>{{ order.product.category.name }}</td>
+                            <td>{{ order.quantity }}</td>
+                            <td>&#8377;{{ order.total_price }}</td>
+                            <td>{{ order.shop.name }}</td>
+                            <td>{{ order.order_date }}</td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="7" class="text-center">No orders available</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock content %}

@@ -1,10 +1,10 @@
 {% if messages %}
-<div class="modal fade show d-block" id="messageModal" tabindex="-1" aria-labelledby="messageModalLabel" aria-hidden="true">
+<div class="modal fade show" id="messageModal" tabindex="-1" aria-labelledby="messageModalLabel" aria-hidden="true" style="display: block;">
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content border-0 shadow-lg">
             <div class="modal-header text-white" style="background-color: #28a745;">
                 <h4 class="modal-title w-100 text-center">Success</h4>
-                <button type="button" class="btn-close" onclick="closeModal()" aria-label="Close"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body text-center p-4">
                 {% for message in messages %}
@@ -12,28 +12,16 @@
                 {% endfor %}
             </div>
             <div class="modal-footer justify-content-center">
-                <button type="button" class="btn btn-lg text-white" style="background-color: #218838;" onclick="closeModal()">OK</button>
+                <button type="button" class="btn btn-lg text-white" style="background-color: #218838;" data-bs-dismiss="modal">OK</button>
             </div>
         </div>
     </div>
 </div>
 
-<style>
-    .modal {
-        display: flex !important;
-        align-items: center;
-        justify-content: center;
-        background: rgba(0, 0, 0, 0.6);
-    }
-    .modal-content {
-        border-radius: 15px;
-    }
-</style>
-
 <script>
-    function closeModal() {
-        document.getElementById("messageModal").classList.remove("show", "d-block");
-        document.getElementById("messageModal").classList.add("d-none");
-    }
+    document.addEventListener("DOMContentLoaded", function () {
+        var messageModal = new bootstrap.Modal(document.getElementById("messageModal"));
+        messageModal.show();
+    });
 </script>
 {% endif %}

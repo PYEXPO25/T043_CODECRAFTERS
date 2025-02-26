@@ -158,6 +158,7 @@ class Product(models.Model):
     description = models.TextField()
     image = models.ImageField(upload_to="products/", null=True, blank=True)
     slug = models.SlugField(max_length=100)
+    is_available = models.BooleanField(default=True)
     def save(self, *args, **kwargs):
         if not self.image:
             self.image = self.category.default_image 
@@ -166,10 +167,9 @@ class Product(models.Model):
             self.description = f"Buy this Fresh and high-quality {self.category} at {self.shop}."
 
         if not self.slug:
-            slug = self.shop.name+"-"+self.shop.shop_owner.username+"-"+self.category.name
+            slug = self.shop.name+"-"+self.shop.shop_owner.username+"-"+self.category.name+'-'+str(self.id)
             self.slug = slugify(slug)
-        if self.quantity <= 0:
-            self.delete()  
+        
         else:
             super().save(*args, **kwargs)
         super().save(*args, **kwargs)
@@ -209,7 +209,7 @@ class Order(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="orders")
     quantity = models.PositiveIntegerField(validators=[MinValueValidator(1)])
     total_price = models.FloatField()
-    
+    shop = models.ForeignKey(Shop,on_delete=models.CASCADE)
     order_date = models.DateTimeField(auto_now_add=True)
 
     
