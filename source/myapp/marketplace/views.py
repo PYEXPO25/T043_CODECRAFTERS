@@ -269,7 +269,3 @@ def deleteproduct(request,productslug):
     product.delete()
     return redirect(reverse("marketplace:myorders")) 
 
-<<<<<<< HEAD
-=======
-
->>>>>>> ff719a2729a3caf707a470cb01eb90e77e47ad63
