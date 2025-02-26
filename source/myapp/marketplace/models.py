@@ -41,25 +41,30 @@ class VegetableImage(models.Model):
         return f"{self.vegetable.name} Image"
 
 
+from django.db import models
+from django.db.models import Avg
+import random
+from django.utils.text import slugify
+
 class Shop(models.Model):
     shop_owner = models.ForeignKey(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=50)
     district = models.ForeignKey(District, on_delete=models.CASCADE)
     slug = models.SlugField(unique=True, max_length=100, blank=True)
-    # vegetables = models.ManyToManyField(Vegetable, related_name="shops")
-    
-    image = models.ImageField(upload_to="shop/image/",max_length=500)  
-    
+    image = models.ImageField(upload_to="shop/image/", max_length=500)  
     shop_description = models.TextField(null=True)
+
     def __str__(self):
         return self.name
 
     def save(self, *args, **kwargs):
-        images = ["https://images.stockcake.com/public/7/b/2/7b208ddd-1125-4d86-b25b-87b124f03469_large/rural-farm-landscape-stockcake.jpg",
-                  "https://images.pexels.com/photos/96715/pexels-photo-96715.jpeg?cs=srgb&dl=pexels-alejandro-barron-21404-96715.jpg&fm=jpg",
-                  "https://cdn.sanity.io/images/ec9j7ju7/production/f6f10b735cf1c9c7bb494d56af0af099dfd823a5-3884x2594.jpg?w=3840&q=75&fit=clip&auto=format",
-                  "https://cdn.pixabay.com/photo/2017/05/19/15/16/countryside-2326787_1280.jpg",
-                  "https://www.nifa.usda.gov/sites/default/files/styles/hero_image_small_1024w/public/2023-03/farm-business-rfa.jpg?itok=zN6Xpx7N"]
+        images = [
+            "https://images.stockcake.com/public/7/b/2/7b208ddd-1125-4d86-b25b-87b124f03469_large/rural-farm-landscape-stockcake.jpg",
+            "https://images.pexels.com/photos/96715/pexels-photo-96715.jpeg?cs=srgb&dl=pexels-alejandro-barron-21404-96715.jpg&fm=jpg",
+            "https://cdn.sanity.io/images/ec9j7ju7/production/f6f10b735cf1c9c7bb494d56af0af099dfd823a5-3884x2594.jpg?w=3840&q=75&fit=clip&auto=format",
+            "https://cdn.pixabay.com/photo/2017/05/19/15/16/countryside-2326787_1280.jpg",
+            "https://www.nifa.usda.gov/sites/default/files/styles/hero_image_small_1024w/public/2023-03/farm-business-rfa.jpg?itok=zN6Xpx7N"
+        ]
 
         if not self.slug:
             self.slug = slugify(f"{self.name}-{self.shop_owner.username}")
@@ -68,48 +73,29 @@ class Shop(models.Model):
             self.image = random.choice(images)
 
         if not self.shop_description:
-          self.shop_description = "A farm shop offering fresh, locally sourced produce, dairy, and homemade goods straight from the farm. Enjoy organic fruits, vegetables, and artisanal products while supporting local farmers and sustainable practices."
+            self.shop_description = "A farm shop offering fresh, locally sourced produce, dairy, and homemade goods straight from the farm. Enjoy organic fruits, vegetables, and artisanal products while supporting local farmers and sustainable practices."
 
         super().save(*args, **kwargs)
 
-        
     @property
     def formated_image(self):
-
-        if self.image.__str__().startswith(('http://','https://')):
+        if self.image.__str__().startswith(('http://', 'https://')):
             url = self.image
         else:
             url = self.image.url
-            
         return url
 
-    
+    @property
+    def average_rating(self):
+        avg = self.ratings.aggregate(avg_rating=Avg("rating"))["avg_rating"]
+        return round(avg, 2) if avg else 0
 
     
-
-
-# class ShopImage(models.Model):
-#     shop = models.ForeignKey(Shop, on_delete=models.CASCADE, related_name="images")
-#     image = models.ImageField(upload_to="shop/")
-
-#     @property
-#     def formated_image(self):
-
-#         if self.image.__str__().startswith(('http://','https://')):
-#             url = self.image
-#         else:
-#             url = self.image.url
-            
-#         return url
-
-
-#     def __str__(self):
-#         return f"{self.shop.name} Image"
 
 
 class Rating(models.Model):
-    shop = models.ForeignKey(Shop, on_delete=models.CASCADE, related_name="ratings")
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    shop = models.ForeignKey(Shop, on_delete=models.CASCADE, related_name="ratings",unique=False)
+    user = models.ForeignKey(User, on_delete=models.CASCADE,unique=False)
     rating = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)])
     review = models.TextField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
