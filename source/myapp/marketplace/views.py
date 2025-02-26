@@ -185,7 +185,7 @@ def view_shop(request,slug):
 
         else:
             messages.error(request, "You need to be logged in to submit a review.")
-
+            return redirect(reverse('marketplace:login'))
         return redirect(reverse('marketplace:shop',kwargs={'slug':slug}))
     return render(request,"marketplace/viewshop.html",{'style':'viewshop','shop':shop,"page_obj":page_obj,'form':form})
 
@@ -205,6 +205,9 @@ def showproduct(request, shopslug, product):
         if request.method == 'POST':
             form = OrderForm(request.POST)
             if form.is_valid():
+                if not request.user.is_authenticated:
+                    messages.error(request, "You need to be logged in to purchase a product.")
+                    return redirect(reverse('marketplace:login'))
                 order = form.save(commit=False)
                 order.user = request.user
                 order.product = product
