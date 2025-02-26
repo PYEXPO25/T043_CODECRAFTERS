@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
-from . models import Order
+from . models import Order,Product,Vegetable
 
 class RegisterForm(forms.Form):
     username=forms.CharField(label='Username',max_length=20,required=True)
@@ -66,3 +66,42 @@ class OrderForm(forms.ModelForm):
         if self.product and quantity > self.product.quantity:
             raise forms.ValidationError(f"Only {self.product.quantity} kg available!")
         
+
+class AddProductForm(forms.ModelForm):
+    category = forms.ModelChoiceField(required=True,queryset=Vegetable.objects.all()) 
+    quantity = forms.IntegerField(required=True)
+    price_per_kg = forms.IntegerField(required=True)
+    shop_description = forms.CharField(required=False,max_length=500)
+    image = forms.ImageField(required=False)
+
+    class Meta:
+        model = Product
+        fields = ['category', 'quantity', 'price_per_kg', 'shop_description','image']
+    
+    def clean(self):
+        cleaned_data = super().clean()
+        
+        quantity = cleaned_data.get("quantity")
+        price_per_kg = cleaned_data.get("price_per_kg")
+
+        if quantity is not None and quantity <= 0:
+            self.add_error("quantity", "Quantity must be greater than 0.")
+
+        if price_per_kg is not None and price_per_kg <= 0:
+            self.add_error("price_per_kg", "Price per kg must be greater than 0.")
+
+        return cleaned_data
+
+    def save(self, commit=True):
+        product = super().save(commit=False)
+        cleaned_data = self.cleaned_data
+        
+        if cleaned_data.get("image"):
+            product.image = cleaned_data["image"]
+        elif cleaned_data.get("category"):  # Ensure category exists before accessing default_image
+            product.image = cleaned_data["category"].default_image
+
+        if commit:
+            product.save()
+
+        return product

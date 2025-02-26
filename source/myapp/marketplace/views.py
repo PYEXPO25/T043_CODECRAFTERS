@@ -1,6 +1,6 @@
 from django.shortcuts import render,redirect, get_object_or_404
 from django.http.response import HttpResponse,HttpResponseRedirect
-from . forms import RegisterForm,SetPasswordForm,LoginForm,OrderForm
+from . forms import RegisterForm,SetPasswordForm,LoginForm,OrderForm,AddProductForm
 from django.contrib.auth import authenticate,login,logout
 from django.core.mail import send_mail
 from django.contrib.auth.hashers import make_password
@@ -8,7 +8,7 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.core.paginator import Paginator
 from django.template.loader import render_to_string
 from django.contrib import messages
-from .models import Product, Shop, TempUser,Vegetable,District
+from .models import Product, Shop, TempUser,Vegetable,District,Order
 from django.contrib.auth.models import User
 import uuid
 from django.urls import reverse
@@ -165,6 +165,7 @@ def login_view(request):
 def view_shop(request,slug):
     shop = Shop.objects.get(slug=slug)
     products = Product.objects.filter(shop=shop)
+    products.filter(is_available = True)
     paginator = Paginator(products,3)
     page_num = request.GET.get("page")
     page_obj = paginator.get_page(page_num)
@@ -182,28 +183,35 @@ def showproduct(request, shopslug, product):
     product = get_object_or_404(Product, slug=product)
     shop = get_object_or_404(Shop, slug=shopslug)
     form = OrderForm()
+    if product.is_available:
+        if request.method == 'POST':
+            form = OrderForm(request.POST)
+            if form.is_valid():
+                order = form.save(commit=False)
+                order.user = request.user
+                order.product = product
+                order.total_price = order.quantity * product.price_per_kg
+                order.shop = shop
+                
+                if product.quantity >= order.quantity:
+                    product.quantity -= order.quantity
+                    product.save()
 
-    if request.method == 'POST':
-        form = OrderForm(request.POST)
-        if form.is_valid():
-            order = form.save(commit=False)
-            order.user = request.user
-            order.product = product
-            order.total_price = order.quantity * product.price_per_kg
+                    order.save()
+                    messages.success(request, "Your order has been successfully placed!")
+                    if product.quantity == 0:
+                        product.is_available = False
+                        product.save()
+                        return redirect(reverse("marketplace:myorders"))
+                    
+                    return redirect(reverse("marketplace:myorders"))
 
-            
-            if product.quantity >= order.quantity:
-                product.quantity -= order.quantity
-                product.save()
+                else:
+                    messages.error(request, "Insufficient stock available!")
 
-                order.save()
-                messages.success(request, "Your order has been successfully placed!")
-                return redirect(reverse("marketplace:showproduct", kwargs={"shopslug": shopslug, "product": product.slug}))
-
-            else:
-                messages.error(request, "Insufficient stock available!")
-
-    return render(request, 'marketplace/productdetail.html', {'shop': shop, 'product': product, 'form': form})
+        return render(request, 'marketplace/productdetail.html', {'shop': shop, 'product': product, 'form': form})
+    else:
+        return redirect(reverse('marketplace:index'))
 
 
 
@@ -212,8 +220,32 @@ def myshops(request):
     myshops = Shop.objects.filter(shop_owner = request.user)
     return render(request,"marketplace/myshops.html",{"myshops":myshops})
 
-def addproduct(requst,shopname):
+def addproduct(request,shopname):
+    shop = Shop.objects.get(name=shopname)
+    form = AddProductForm()
+    if request.method == "POST":
+        print("POST DATA:", request.POST)
 
+        form = AddProductForm(request.POST,request.FILES)
+        print(form.errors)
+
+        if form.is_valid():
+            print("Valid")
+            product = form.save(commit=False)
+            product.shop = shop
+            product.shop_description = f"Buy this Fresh and high-quality {form.cleaned_data['category']} at {shop.name}."
+            product.save()
+            messages.success(request,"Shop has been Created!")
+            return redirect(reverse('marketplace:shop', kwargs={'slug': shop.slug}))  # Change to your success URL
     vegetables = Vegetable.objects.all()
 
-    return render(requst,"marketplace/addproduct.html",{'vegetables':vegetables})
+    return render(request,"marketplace/addproduct.html",{'vegetables':vegetables,'form':form})
+
+def myorders(request):
+    orders = Order.objects.filter(user=request.user)
+    return render(request,"marketplace/myorders.html",{'orders':orders})
+
+def deleteproduct(request,productslug):
+    product = Product.objects.get(slug=productslug)
+    product.delete()
+    return redirect(reverse("marketplace:myorders")) 
