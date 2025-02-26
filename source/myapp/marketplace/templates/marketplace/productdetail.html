@@ -31,42 +31,35 @@
                     
                 <p><strong>Location:</strong> {{shop.district.name}}</p>
                 <p><strong>Available Quantity:</strong> {{product.quantity}} Kg</p>
-                <!-- Order Form -->
-                <form class="d-flex flex-column align-items-center" method="POST">
-                    <div class="mb-3 w-100 text-center">
-                        {% csrf_token %}
-                        <label for="quantity" class="form-label">Select Quantity (kg):</label>
-                        <input type="number" name="quantity" class="form-control w-50 mx-auto" id="quantity" min="1" value="1">
+                {% if shop.shop_owner == request.user %}
+                    <div class="d-flex justify-content-center gap-3">
+                        
+                        <a href="{% url 'marketplace:editproduct' shopslug=product.shop.slug product=product.slug %}" class="btn btn-success rounded-pill px-4">
+                            Edit Product
+                        </a>
                     </div>
                     
-                    <button type="submit" class="btn btn-danger px-4 py-2 rounded-pill">🚀 Buy Now</button>
-                </form>
+                {% else %}
+                    <form class="d-flex flex-column align-items-center" method="POST">
+                        <div class="mb-3 w-100 text-center">
+                            {% csrf_token %}
+                            <label for="quantity" class="form-label">Select Quantity (kg):</label>
+                            <input type="number" name="quantity" class="form-control w-50 mx-auto" id="quantity" >
+                        </div>
+                        
+                        <button type="submit" class="btn btn-danger px-4 py-2 rounded-pill">🚀 Buy Now</button>
+                    </form>
+                {% endif %}
+                
                 
             </div>
         </div>
 
         {% include "marketplace/includes/messages.html" %}
-        <div class="mt-5">
-            <h3>Customer Reviews</h3>
-            <div class="border p-3 rounded bg-white">
-                <p><strong>Raj Kumar</strong> ⭐⭐⭐⭐</p>
-                <p>Fresh and tasty tomatoes! Delivered on time.</p>
-            </div>
-            <div class="border p-3 rounded bg-white mt-2">
-                <p><strong>Asha Patel</strong> ⭐⭐⭐⭐⭐</p>
-                <p>Very fresh! The quality was amazing.</p>
-            </div>
 
-            
-            <h5 class="mt-4">Leave a Review</h5>
-            <form>
-                <div class="mb-3">
-                    <label for="review" class="form-label">Your Review</label>
-                    <textarea class="form-control" id="review" rows="3"></textarea>
-                </div>
-                <button type="submit" class="btn btn-primary">Submit Review</button>
-            </form>
-        </div>
-    </div>
+<footer class="bg-success text-white text-center p-3 fixed-bottom">
+    <p>© 2025 Farmer Bazar | Connecting Farmers & Consumers</p>
+</footer>
+        
 
 {% endblock content %}

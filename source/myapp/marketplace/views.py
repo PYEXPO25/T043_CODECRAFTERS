@@ -1,6 +1,6 @@
 from django.shortcuts import render,redirect, get_object_or_404
 from django.http.response import HttpResponse,HttpResponseRedirect
-from . forms import RegisterForm,SetPasswordForm,LoginForm,OrderForm,AddProductForm,AddReviewForm
+from . forms import RegisterForm,SetPasswordForm,LoginForm,OrderForm,AddProductForm,AddReviewForm,EditProductForm
 from django.contrib.auth import authenticate,login,logout
 from django.core.mail import send_mail
 from django.contrib.auth.hashers import make_password
@@ -269,3 +269,15 @@ def deleteproduct(request,productslug):
     product.delete()
     return redirect(reverse("marketplace:myorders")) 
 
+def edit_product(request, shopslug, product):
+    product = get_object_or_404(Product, slug=product)
+    shop = get_object_or_404(Shop,slug=shopslug)
+    if request.method == "POST":
+        form = EditProductForm(request.POST, request.FILES, instance=product)
+        if form.is_valid():
+            form.save()
+            return redirect('marketplace:showproduct', shop.slug, product.slug)  # Redirect after successful edit
+    else:
+        form = EditProductForm(instance=product)
+
+    return render(request, 'marketplace/editproduct.html', {'form': form, 'product': product})

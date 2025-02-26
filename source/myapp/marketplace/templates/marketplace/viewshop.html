@@ -33,9 +33,11 @@
 </div>
 
 <!-- Products Section -->
+{% if page_obj %}
 <div class="container my-5">
     <h3 class="text-center mb-4">Available Products</h3>
     <div class="row">
+        
         {% for product in page_obj %}
         <div class="col-md-4">
             <div class="card product-card shadow">
@@ -44,13 +46,28 @@
                 <div class="card-body text-center">
                     <h5 class="card-title">{{product.category}}</h5>
                     <p class="card-text"><strong>₹{{product.price_per_kg}}</strong></p>
-                    <a href="{% url "marketplace:showproduct" shopslug=product.shop.slug product=product.slug %}" class="btn btn-success btn-rounded">View Product</a>
 
+                    {% if shop.shop_owner == request.user %}
+                    <div class="d-flex justify-content-center gap-3">
+                        <a href="{% url 'marketplace:showproduct' shopslug=product.shop.slug product=product.slug %}" class="btn btn-success rounded-pill px-4">
+                            View Product
+                        </a>
+                        <a href="{% url 'marketplace:editproduct' shopslug=product.shop.slug product=product.slug %}" class="btn btn-primary rounded-pill px-4">
+                            Edit Product
+                        </a>
+                    </div>
+                    
+                    {% else %}
+                        <a href="{% url "marketplace:showproduct" shopslug=product.shop.slug product=product.slug %}" class="btn btn-success btn-rounded">View Product</a>
+                    {% endif %}
                     {% comment %} {% url "marketplace:showproduct" shopname=shop.name product=product.product_name%} {% endcomment %}
                 </div>
             </div>
         </div>
         {% endfor %}
+        {% else %}
+        <h3 class="text-center mb-4">Currently No product available</h3>
+        {% endif %}
     </div>
 </div>
 

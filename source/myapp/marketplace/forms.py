@@ -123,3 +123,11 @@ class AddReviewForm(forms.ModelForm):
     def clean(self):
         cleaned_data =  super().clean()
         
+
+class EditProductForm(forms.ModelForm):
+    price_per_kg = forms.IntegerField(required=True)
+    quantity = forms.IntegerField(required=True)
+    description = forms.CharField(required=True)
+    class Meta:
+        model = Product
+        fields = ['price_per_kg', 'quantity', 'description']
