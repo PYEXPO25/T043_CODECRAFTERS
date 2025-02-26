@@ -1,23 +1,160 @@
+<<<<<<< HEAD
+=======
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Reviews</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
+        .review-box {
+            background-color: #fff;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            transition: 0.3s ease-in-out;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        .review-box:hover {
+            transform: scale(1.02);
+        }
+        .review-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .stars {
+            color: #ffc107;
+            font-size: 1.3rem;
+        }
+        .rating-text {
+            font-size: 1rem;
+            color: #555;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        .rating-label {
+            font-weight: bold;
+            color: #444;
+        }
+        .rating {
+            direction: rtl;
+            unicode-bidi: bidi-override;
+            display: flex;
+            justify-content: flex-start;
+        }
+        .rating input {
+            display: none;
+        }
+        .rating label {
+            font-size: 1.5rem;
+            color: #ddd;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .rating input:checked ~ label,
+        .rating label:hover,
+        .rating label:hover ~ label {
+            color: #ffc107;
+        }
+        /* Highlighted Review Form */
+        .review-form {
+            background-color: #fff8dc; /* Light yellow background */
+            border: 2px solid #ffcc00; /* Yellow border */
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(255, 204, 0, 0.3);
+            margin-top: 20px;
+        }
+        .review-form h5 {
+            color: #444;
+        }
+        .review-form textarea {
+            border: 1px solid #ffcc00;
+        }
+        .review-form button {
+            background-color: #ffcc00;
+            border: none;
+            color: black;
+            font-weight: bold;
+        }
+        .review-form button:hover {
+            background-color: #e6b800;
+        }
+        .rate input{
+            border: 1px solid #ffcc00;
+        }
+        /* Footer Padding */
+        
+    </style>
+</head>
+<body>
+
+>>>>>>> ff719a2729a3caf707a470cb01eb90e77e47ad63
 <div class="mt-5">
     <h3>Customer Reviews</h3>
 
-    {% for review in reviews %}
-    <div class="border p-3 rounded bg-white">
-        <p><strong>Raj Kumar</strong> ⭐⭐⭐⭐</p>
-        <p>Fresh and tasty tomatoes! Delivered on time.</p>
-    </div>
-    {% empty %}
-        <p>No reviews yet</p>
-    {% endfor %}
-    
-    <h5 class="mt-4">Leave a Review</h5>
-    <form>
-        <div class="mb-3">
-            <label for="review" class="form-label">Your Review</label>
-            <textarea class="form-control" id="review" rows="3"></textarea>
+    {% if shop.ratings.all %}
+        {% for review in shop.ratings.all %}
+        <div class="review-box">
+            <div class="review-header">
+                <p><strong>{{ review.user.username }}</strong></p>
+                <div>
+                    <span class="rating-label">Rating:</span>
+                    <span class="stars">
+                        {% for i in "12345"|make_list %}
+                            {% if forloop.counter <= review.rating %}
+                                ⭐
+                            {% endif %}
+                        {% endfor %}
+                    </span>
+                    <span class="rating-text">({{ review.rating }}/5)</span>
+                </div>
+            </div>
+            <p>{{ review.review }}</p>
         </div>
-        <button type="submit" class="btn btn-primary">Submit Review</button>
-    </form>
+        {% endfor %}
+    {% else %}
+        <p class="text-muted">No reviews yet</p>
+    {% endif %}
+    
+    <div class="container mt-4 review-form">
+    
+        <h5 class="text-center">Leave a Review</h5>
+        <form method="POST" class="">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="review" class="form-label fw-bold">Your Review</label>
+                <textarea class="form-control border-warning" id="review" name="review" rows="3"></textarea>
+            </div>
+            <div class="mb-3">
+                <label for="rating" class="form-label fw-bold">Rating</label>
+                <input type="number" name="rating" class="form-control border-warning" id="rating" placeholder="Enter your rating (1 to 5)" min="1" max="5">
+            </div>
+            <div class="text-center">
+                <button type="submit" class="btn btn-warning fw-bold px-4">Submit Review</button>
+            </div>
+        </form>
+    
 </div>
+<<<<<<< HEAD
 </div>
 
+=======
+
+    </div>
+</div>
+
+<!-- Footer -->
+
+
+</body>
+</html>
+>>>>>>> ff719a2729a3caf707a470cb01eb90e77e47ad63

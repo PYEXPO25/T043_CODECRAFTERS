@@ -1,6 +1,6 @@
 from django.shortcuts import render,redirect, get_object_or_404
 from django.http.response import HttpResponse,HttpResponseRedirect
-from . forms import RegisterForm,SetPasswordForm,LoginForm,OrderForm,AddProductForm
+from . forms import RegisterForm,SetPasswordForm,LoginForm,OrderForm,AddProductForm,AddReviewForm
 from django.contrib.auth import authenticate,login,logout
 from django.core.mail import send_mail
 from django.contrib.auth.hashers import make_password
@@ -8,7 +8,7 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.core.paginator import Paginator
 from django.template.loader import render_to_string
 from django.contrib import messages
-from .models import Product, Shop, TempUser,Vegetable,District,Order
+from .models import Product, Rating, Shop, TempUser,Vegetable,District,Order
 from django.contrib.auth.models import User
 import uuid
 from django.urls import reverse
@@ -169,7 +169,25 @@ def view_shop(request,slug):
     paginator = Paginator(products,3)
     page_num = request.GET.get("page")
     page_obj = paginator.get_page(page_num)
-    return render(request,"marketplace/viewshop.html",{'style':'viewshop','shop':shop,"page_obj":page_obj})
+    form = AddReviewForm()
+    if request.method == "POST":
+        rating_value = int(request.POST.get("rating"))
+        review_text = request.POST.get("review")
+
+        if request.user.is_authenticated:
+            if Rating.objects.filter(shop=shop, user=request.user).exists():
+                messages.error(request, "You have already submitted a review for this shop.")
+                return redirect(reverse('marketplace:shop',kwargs={'slug':slug}))
+
+            # Create a new rating
+            Rating.objects.create(shop=shop, user=request.user, rating=rating_value, review=review_text)
+            messages.success(request, "Your review has been submitted.")
+
+        else:
+            messages.error(request, "You need to be logged in to submit a review.")
+
+        return redirect(reverse('marketplace:shop',kwargs={'slug':slug}))
+    return render(request,"marketplace/viewshop.html",{'style':'viewshop','shop':shop,"page_obj":page_obj,'form':form})
 
 
 def logout_view(request):
@@ -251,3 +269,7 @@ def deleteproduct(request,productslug):
     product.delete()
     return redirect(reverse("marketplace:myorders")) 
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> ff719a2729a3caf707a470cb01eb90e77e47ad63

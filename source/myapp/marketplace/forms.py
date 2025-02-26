@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
-from . models import Order,Product,Vegetable
+from . models import Order,Product,Vegetable,Rating
 
 class RegisterForm(forms.Form):
     username=forms.CharField(label='Username',max_length=20,required=True)
@@ -105,3 +105,21 @@ class AddProductForm(forms.ModelForm):
             product.save()
 
         return product
+    
+
+class AddReviewForm(forms.ModelForm):
+    review = forms.CharField(required=True)
+    rating = forms.IntegerField(min_value=0,max_value=5,required=True)
+
+    class Meta:
+        model = Rating
+        fields = ['review','rating']
+
+    def save(self, commit = ...):
+        review = super().save(commit)
+
+        return review
+    
+    def clean(self):
+        cleaned_data =  super().clean()
+        
