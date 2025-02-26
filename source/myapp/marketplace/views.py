@@ -1,7 +1,8 @@
 from django.shortcuts import render,redirect, get_object_or_404
 from django.http.response import HttpResponse,HttpResponseRedirect
-from . forms import RegisterForm,SetPasswordForm,LoginForm,OrderForm,AddProductForm,AddReviewForm,EditProductForm
+from . forms import RegisterForm,SetPasswordForm,LoginForm,OrderForm,AddProductForm,AddReviewForm,EditProductForm,NewShopForm
 from django.contrib.auth import authenticate,login,logout
+from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
 from django.contrib.auth.hashers import make_password
 from django.contrib.sites.shortcuts import get_current_site
@@ -189,7 +190,7 @@ def view_shop(request,slug):
         return redirect(reverse('marketplace:shop',kwargs={'slug':slug}))
     return render(request,"marketplace/viewshop.html",{'style':'viewshop','shop':shop,"page_obj":page_obj,'form':form})
 
-
+@login_required
 def logout_view(request):
     logout(request)
    
@@ -235,13 +236,12 @@ def showproduct(request, shopslug, product):
         return redirect(reverse('marketplace:shop', kwargs={'slug': shop.slug})) 
 
 
-
+@login_required
 def myshops(request):
-
-
     myshops = Shop.objects.filter(shop_owner = request.user)
     return render(request,"marketplace/myshops.html",{"myshops":myshops})
 
+@login_required
 def addproduct(request,shopname):
     shop = Shop.objects.get(name=shopname)
     form = AddProductForm()
@@ -263,6 +263,7 @@ def addproduct(request,shopname):
 
     return render(request,"marketplace/addproduct.html",{'vegetables':vegetables,'form':form})
 
+@login_required
 def myorders(request):
     orders = Order.objects.filter(user=request.user)
     return render(request,"marketplace/myorders.html",{'orders':orders})
@@ -272,6 +273,7 @@ def deleteproduct(request,productslug):
     product.delete()
     return redirect(reverse("marketplace:myorders")) 
 
+@login_required
 def edit_product(request, shopslug, product):
     product = get_object_or_404(Product, slug=product)
     shop = get_object_or_404(Shop,slug=shopslug)
@@ -286,9 +288,25 @@ def edit_product(request, shopslug, product):
 
     return render(request, 'marketplace/editproduct.html', {'form': form, 'product': product})
 
+@login_required
 def remove_product(request, shopslug, product):
     product_instance = get_object_or_404(Product, shop__slug=shopslug, slug=product)
     product_instance.is_available =False
     product_instance.save()
     messages.success(request, "Product removed successfully.")
     return redirect("marketplace:shop", slug=shopslug)
+
+@login_required
+def add_shop(request):
+    form = NewShopForm()
+    districts = District.objects.all()
+    if request.method == 'POST':
+        form = NewShopForm(request.POST,request.FILES)
+        print('Here')
+        if form.is_valid():
+            print('Valid')
+            shop = form.save(commit=False)
+            shop.shop_owner = request.user
+            shop.save()
+            return redirect(reverse('marketplace:shop',kwargs={'slug':shop.slug}))
+    return render(request,"marketplace/addshop.html",{'districts':districts,"form":form})

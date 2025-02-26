@@ -87,9 +87,13 @@
         {% empty %}
             <div class="no-shop">
                 <p>You don’t have a shop yet.</p>
-                <a href="#" class="btn btn-create">Create a New Shop</a>
             </div>
         {% endfor %}
+        <div class="d-flex justify-content-center pb-3">
+            <a href="{% url 'marketplace:addshop' %}" class="btn btn-secondary rounded-pill px-4 py-1">Create a New Shop</a>
+        </div>
+        
+        
     </div>
     {% include "marketplace/includes/footer.html" %}
 {% endblock content %}

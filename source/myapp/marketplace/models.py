@@ -49,7 +49,7 @@ class Shop(models.Model):
     district = models.ForeignKey(District, on_delete=models.CASCADE)
     slug = models.SlugField(unique=True, max_length=100, blank=True)
     image = models.ImageField(upload_to="shop/image/", max_length=500)  
-    shop_description = models.TextField(null=True)
+    shop_description = models.CharField(null=True,max_length=1500)
 
     def __str__(self):
         return self.name

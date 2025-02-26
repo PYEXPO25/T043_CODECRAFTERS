@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
-from . models import Order,Product,Vegetable,Rating
+from . models import District, Order,Product, Shop,Vegetable,Rating
 
 class RegisterForm(forms.Form):
     username=forms.CharField(label='Username',max_length=20,required=True)
@@ -131,3 +131,20 @@ class EditProductForm(forms.ModelForm):
     class Meta:
         model = Product
         fields = ['price_per_kg', 'quantity', 'description']
+
+class NewShopForm(forms.ModelForm):
+    name = forms.CharField(required=True,max_length=50)
+    district = forms.ModelChoiceField(required=True,queryset=District.objects.all())
+    image = forms.ImageField(required=False)
+    shop_description = forms.CharField(max_length=1500,required=False)
+
+    class Meta:
+        model = Shop
+        fields = ['image','shop_description','district','name']
+
+    def save(self, commit = ...):
+        shop = super().save(commit)
+        
+        if commit:
+            shop.save()
+        return shop
