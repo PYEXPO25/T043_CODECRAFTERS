@@ -66,7 +66,7 @@
 
     </div>
 
-    <!-- Custom Confirmation Modal -->
+    <!-- ✅ Corrected Confirmation Modal -->
     <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -79,16 +79,27 @@
                 </div>
                 <div class="modal-footer justify-content-center">
                     <button type="button" class="btn btn-danger px-4" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-success px-4" onclick="submitForm()">Yes, Place Order</button>
+                    
+                    <!-- ✅ Form inside modal to correctly submit order -->
+                    <form id="confirmForm" method="POST">
+                        {% csrf_token %}
+                        <input type="hidden" name="quantity" id="hiddenQuantity">
+                        <button type="submit" class="btn btn-success px-4">Yes, Place Order</button>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        function submitForm() {
-            document.getElementById("buyForm").submit();
-        }
+        document.addEventListener("DOMContentLoaded", function () {
+            const quantityInput = document.getElementById("quantity");
+            const hiddenQuantity = document.getElementById("hiddenQuantity");
+            
+            document.getElementById("confirmModal").addEventListener("show.bs.modal", function () {
+                hiddenQuantity.value = quantityInput.value; // Pass quantity before submitting
+            });
+        });
     </script>
 
 {% endblock content %}

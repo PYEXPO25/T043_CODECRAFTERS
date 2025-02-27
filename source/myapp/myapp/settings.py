@@ -155,7 +155,8 @@ LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'marketplace:home'
 LOGOUT_REDIRECT_URL = 'login'
 
-
+RAZORPAY_API_KEY = 'rzp_test_ZaxbrIIi7xfJQ5'
+RAZORPAY_API_SECRET_KEY = 'TzfugBDqIED2MC0Wk9oXsWsA'
 
 import os
 
