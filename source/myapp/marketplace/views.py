@@ -334,6 +334,9 @@ def resetpassword(request,uidb64,token):
 
     return render(request,"marketplace/set_password.html",{"title":"Reset password",'form':form})
 
+<<<<<<< HEAD
+
+=======
 def payment(request,shop,product,amount):
     if request.method == 'POST':
         client = razorpay.Client(auth=('rzp_test_ZaxbrIIi7xfJQ5','TzfugBDqIED2MC0Wk9oXsWsA'))
@@ -384,4 +387,9 @@ def showproduct(request, shopslug, product):
 @csrf_exempt
 def sucess(request,shop,product):
 
+<<<<<<< HEAD
     return redirect(reverse('marketplace:myorders'))
+=======
+    return redirect(reverse('marketplace:myorder'))
+>>>>>>> d86656627ef8e01229921549d32993ec9853c745
+>>>>>>> 924c23a75af71d95db0c5f914a90f10507650f93
