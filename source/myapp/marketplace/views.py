@@ -372,3 +372,5 @@ def resetpassword(request,uidb64,token):
                 messages.error(request,"Your redirect link has been expired")
 
     return render(request,"marketplace/set_password.html",{"title":"Reset password",'form':form})
+
+
