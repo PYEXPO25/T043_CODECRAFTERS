@@ -192,3 +192,5 @@ class Order(models.Model):
 
     def __str__(self):
         return f"Order #{self.id} - {self.product.category.name} ({self.quantity} kg) by {self.user.username}"
+    
+

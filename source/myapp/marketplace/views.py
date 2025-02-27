@@ -19,7 +19,7 @@ from django.contrib.auth.tokens import default_token_generator
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode,urlsafe_base64_decode
 import razorpay
-
+from django.views.decorators.csrf import csrf_exempt
 # Create your views here.
 
 def index(request):
@@ -203,46 +203,7 @@ def logout_view(request):
 
 
 
-def showproduct(request, shopslug, product):
-    product = get_object_or_404(Product, slug=product)
-    shop = get_object_or_404(Shop, slug=shopslug)
-    form = OrderForm()
-    if product.is_available:
-        if request.method == 'POST':
-            form = OrderForm(request.POST)
-            if form.is_valid():
-                if not request.user.is_authenticated:
-                    messages.error(request, "You need to be logged in to purchase a product.")
-                    return redirect(reverse('marketplace:login'))
-                quantity = form.cleaned_data['quantity']
-                amount = quantity*product.price_per_kg*100
-                # client = razorpay.Client(auth=('rzp_test_ZaxbrIIi7xfJQ5','TzfugBDqIED2MC0Wk9oXsWsA'))
-                # payment = client.order.create({"amount":amount,'currency':'INR','payment_capture':'1'})
-                order = form.save(commit=False)
-                order.user = request.user
-                order.product = product
-                order.total_price = order.quantity * product.price_per_kg * 100
-                order.shop = shop
-                
-                if product.quantity >= order.quantity:
-                    product.quantity -= order.quantity
-                    product.save()
 
-                    order.save()
-                    messages.success(request, "Your order has been successfully placed!")
-                    if product.quantity == 0:
-                        product.is_available = False
-                        product.save()
-                        return redirect(reverse("marketplace:payment",kwargs={'product':product.slug,"amount":int(amount),'shop':shop.slug}))
-                    
-                    return redirect(reverse("marketplace:payment",kwargs={'product':product.slug,"amount":int(amount),'shop':shop.slug}))
-
-                else:
-                    messages.error(request, "Insufficient stock available!")
-
-        return render(request, 'marketplace/productdetail.html', {'shop': shop, 'product': product, 'form': form})
-    else:
-        return redirect(reverse('marketplace:shop', kwargs={'slug': shop.slug})) 
 
 
 @login_required
@@ -379,6 +340,48 @@ def payment(request,shop,product,amount):
         payment = client.order.create({"amount":amount,'currency':'INR','payment_capture':'1'})
     return render(request,'marketplace/payment.html',{"amount":amount})
 
+def showproduct(request, shopslug, product):
+    product = get_object_or_404(Product, slug=product)
+    shop = get_object_or_404(Shop, slug=shopslug)
+    form = OrderForm()
+    if product.is_available:
+        if request.method == 'POST':
+            form = OrderForm(request.POST)
+            if form.is_valid():
+                if not request.user.is_authenticated:
+                    messages.error(request, "You need to be logged in to purchase a product.")
+                    return redirect(reverse('marketplace:login'))
+                quantity = form.cleaned_data['quantity']
+                amount = quantity*product.price_per_kg*100
+                # client = razorpay.Client(auth=('rzp_test_ZaxbrIIi7xfJQ5','TzfugBDqIED2MC0Wk9oXsWsA'))
+                # payment = client.order.create({"amount":amount,'currency':'INR','payment_capture':'1'})
+                order = form.save(commit=False)
+                order.user = request.user
+                order.product = product
+                order.total_price = order.quantity * product.price_per_kg * 100
+                order.shop = shop
+                
+                if product.quantity >= order.quantity:
+                    product.quantity -= order.quantity
+                    product.save()
+
+                    order.save()
+                    messages.success(request, "Your order has been successfully placed!")
+                    if product.quantity == 0:
+                        product.is_available = False
+                        product.save()
+                        return redirect(reverse("marketplace:payment",kwargs={'product':product.slug,"amount":int(amount),'shop':shop.slug}))
+                    
+                    return redirect(reverse("marketplace:payment",kwargs={'product':product.slug,"amount":int(amount),'shop':shop.slug}))
+
+                else:
+                    messages.error(request, "Insufficient stock available!")
+
+        return render(request, 'marketplace/productdetail.html', {'shop': shop, 'product': product, 'form': form})
+    else:
+        return redirect(reverse('marketplace:shop', kwargs={'slug': shop.slug})) 
+    
+@csrf_exempt
 def sucess(request,shop,product):
 
-    return redirect(reverse('marketplace:myorder'))
+    return redirect(reverse('marketplace:myorders'))
