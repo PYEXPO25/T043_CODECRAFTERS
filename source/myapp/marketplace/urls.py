@@ -21,6 +21,7 @@ urlpatterns = [
     path('my_shops/new_shop',views.add_shop,name="addshop"),
     path("forgotpassword/",views.forgotpassword,name="forgotpassword"),
     path("resetpassword/<uidb64>/<token>",views.resetpassword,name="resetpassword"),
-    path('<shop>/<product>/payment/<int:amount>',views.payment,name="payment"),
-    path('<shop>/<product>/payment/sucess',views.sucess,name="payment_sucess")
+    path('<slug:shopslug>/<slug:product>/payment/<int:amount>/<int:order_id>/', views.payment, name='payment'),
+    path('<slug:shopslug>/<slug:product>/payment/<int:amount>/<int:order_id>/sucess', views.sucess, name='success'),
+    path('cancel/<shopslug>/<product>/',views.cancel,name="cancel"),
 ]

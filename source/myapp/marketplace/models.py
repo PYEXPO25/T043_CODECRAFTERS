@@ -87,7 +87,13 @@ class Shop(models.Model):
         avg = self.ratings.aggregate(avg_rating=Avg("rating"))["avg_rating"]
         return round(avg, 2) if avg else 0
 
-    
+    @property
+    def product_available(self):
+        if Product.objects.filter(is_available=True,shop__slug =self.slug).exists():
+            return True
+        else:
+            return False
+            
 
 
 class Rating(models.Model):
@@ -187,7 +193,7 @@ class Order(models.Model):
     total_price = models.FloatField()
     shop = models.ForeignKey(Shop,on_delete=models.CASCADE)
     order_date = models.DateTimeField(auto_now_add=True)
-
+    is_paid = models.BooleanField(default=False)
     
 
     def __str__(self):

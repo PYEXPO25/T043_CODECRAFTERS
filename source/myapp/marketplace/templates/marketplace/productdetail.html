@@ -78,7 +78,7 @@
                     <p class="fs-5">Do you want to place the order at <span class="fw-bold text-success">{{ shop }}</span>?</p>
                 </div>
                 <div class="modal-footer justify-content-center">
-                    <button type="button" class="btn btn-danger px-4" data-bs-dismiss="modal">Cancel</button>
+                    
                     
                     <!-- ✅ Form inside modal to correctly submit order -->
                     <form id="confirmForm" method="POST">
@@ -86,6 +86,7 @@
                         <input type="hidden" name="quantity" id="hiddenQuantity">
                         <button type="submit" class="btn btn-success px-4">Yes, Place Order</button>
                     </form>
+                    <button type="button" class="btn btn-danger px-4" data-bs-dismiss="modal">Cancel</button>
                 </div>
             </div>
         </div>

@@ -23,11 +23,13 @@
                         <th scope="col">Total Price</th>
                         <th scope="col">Shop</th>
                         <th scope="col">Order Date</th>
+                        
                     </tr>
                 </thead>
                 <tbody>
                     {% for order in orders %}
                         <tr>
+                            {% if order.is_paid %}
                             <td>{{ order.id }}</td>
                             <td>{{ order.user.username }}</td>
                             <td>{{ order.product.category.name }}</td>
@@ -35,6 +37,8 @@
                             <td>&#8377;{{ order.total_price }}</td>
                             <td>{{ order.shop.name }}</td>
                             <td>{{ order.order_date }}</td>
+                            {% endif %}
+
                         </tr>
                     {% empty %}
                         <tr>
