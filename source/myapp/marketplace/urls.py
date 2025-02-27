@@ -19,4 +19,6 @@ urlpatterns = [
     path('<shopslug>/edit/<product>/',views.edit_product,name="editproduct"),
     path("shop/<slug:shopslug>/product/<slug:product>/remove/", views.remove_product, name="removeproduct"),
     path('my_shops/new_shop',views.add_shop,name="addshop"),
+    path("forgotpassword/",views.forgotpassword,name="forgotpassword"),
+    path("resetpassword/<uidb64>/<token>",views.resetpassword,name="resetpassword"),
 ]

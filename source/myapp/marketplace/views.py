@@ -1,11 +1,10 @@
 from django.shortcuts import render,redirect, get_object_or_404
 from django.http.response import HttpResponse,HttpResponseRedirect
-from . forms import RegisterForm,SetPasswordForm,LoginForm,OrderForm,AddProductForm,AddReviewForm,EditProductForm,NewShopForm
+from . forms import RegisterForm,SetPasswordForm,LoginForm,OrderForm,AddProductForm,AddReviewForm,EditProductForm,NewShopForm,ForgotPasswordForm
 from django.contrib.auth import authenticate,login,logout
 from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
 from django.contrib.auth.hashers import make_password
-from django.contrib.sites.shortcuts import get_current_site
 from django.core.paginator import Paginator
 from django.template.loader import render_to_string
 from django.contrib import messages
@@ -15,6 +14,12 @@ import uuid
 from django.urls import reverse
 from django.db.models import Q
 from django.utils.translation import gettext as _
+from django.contrib.sites.shortcuts import get_current_site
+from django.contrib.auth.tokens import default_token_generator
+from django.utils.encoding import force_bytes
+from django.utils.http import urlsafe_base64_encode,urlsafe_base64_decode
+
+
 # Create your views here.
 
 def index(request):
@@ -310,3 +315,56 @@ def add_shop(request):
             shop.save()
             return redirect(reverse('marketplace:shop',kwargs={'slug':shop.slug}))
     return render(request,"marketplace/addshop.html",{'districts':districts,"form":form})
+
+def forgotpassword(request):
+
+    form = ForgotPasswordForm()
+
+    if request.method == 'POST':
+
+        form = ForgotPasswordForm(request.POST)
+
+        if form.is_valid():
+            try:
+                email = form.cleaned_data['email']
+                user = User.objects.get(email=email)
+                subject = "Password Change request"
+                current_site = get_current_site(request)
+                
+                domain = current_site.domain
+                token = default_token_generator.make_token(user)
+                uid = urlsafe_base64_encode(force_bytes(user.pk))
+                message = render_to_string("marketplace/forgetpasswordemail.html",{"domain":domain,"uid":uid,"token":token})
+                
+                send_mail(subject,message,"noreply@zoro.com",[email])
+                messages.success(request,"Verification Email has been sent your mail")
+            except Exception as e:
+                
+                messages.warning(request,e)
+                
+    return render(request,"marketplace/forgetpassword.html",{'title':"Forgot Password","form":form})
+
+
+
+def resetpassword(request,uidb64,token):
+    form = SetPasswordForm()
+    if request.method == "POST":
+        form = SetPasswordForm(request.POST)
+        
+        if form.is_valid():
+            new_pass = form.cleaned_data['password']
+            try:
+                pk = urlsafe_base64_decode(uidb64)
+                user = User.objects.get(pk=pk)
+            except:
+                user = None
+
+            if user is not None and default_token_generator.check_token(user,token):
+                user.set_password(new_pass)
+                user.save()
+                messages.success(request,"Your password has been successfully updated.")
+                return redirect(reverse('marketplace:index'))
+            else:
+                messages.error(request,"Your redirect link has been expired")
+
+    return render(request,"marketplace/set_password.html",{"title":"Reset password",'form':form})
