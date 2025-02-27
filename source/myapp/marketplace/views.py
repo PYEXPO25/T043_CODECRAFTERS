@@ -18,7 +18,7 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode,urlsafe_base64_decode
-
+import razorpay
 
 # Create your views here.
 
@@ -214,6 +214,10 @@ def showproduct(request, shopslug, product):
                 if not request.user.is_authenticated:
                     messages.error(request, "You need to be logged in to purchase a product.")
                     return redirect(reverse('marketplace:login'))
+                # quantity = form.cleaned_data['quantity']
+                # amount = quantity*product.price_per_kg*100
+                # client = razorpay.Client(auth=('rzp_test_ZaxbrIIi7xfJQ5','TzfugBDqIED2MC0Wk9oXsWsA'))
+                # payment = client.order.create({"amount":amount,'currency':'INR','payment_capture':'1'})
                 order = form.save(commit=False)
                 order.user = request.user
                 order.product = product

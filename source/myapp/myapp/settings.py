@@ -155,6 +155,8 @@ LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'marketplace:home'
 LOGOUT_REDIRECT_URL = 'login'
 
+
+
 import os
 
 MEDIA_URL = '/media/'
