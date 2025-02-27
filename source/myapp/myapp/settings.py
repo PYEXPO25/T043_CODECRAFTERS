@@ -150,6 +150,13 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = "79113b590468b8"
 EMAIL_HOST_PASSWORD = "358045d3a51b26"
 
+
+LOGIN_URL = 'login'
+LOGIN_REDIRECT_URL = 'marketplace:home'
+LOGOUT_REDIRECT_URL = 'login'
+
+
+
 import os
 
 MEDIA_URL = '/media/'

@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
-from . models import Order,Product,Vegetable,Rating
+from . models import District, Order,Product, Shop,Vegetable,Rating
 
 class RegisterForm(forms.Form):
     username=forms.CharField(label='Username',max_length=20,required=True)
@@ -48,7 +48,7 @@ class SetPasswordForm(forms.Form):
         
 
 class OrderForm(forms.ModelForm):
-    quantity = forms.IntegerField(min_value=1)
+    quantity = forms.IntegerField(min_value=1,required=True)
     
 
     class Meta:
@@ -123,3 +123,52 @@ class AddReviewForm(forms.ModelForm):
     def clean(self):
         cleaned_data =  super().clean()
         
+
+class EditProductForm(forms.ModelForm):
+    price_per_kg = forms.IntegerField(required=True)
+    quantity = forms.IntegerField(required=True)
+    description = forms.CharField(required=True)
+    class Meta:
+        model = Product
+        fields = ['price_per_kg', 'quantity', 'description']
+
+class NewShopForm(forms.ModelForm):
+    name = forms.CharField(required=True,max_length=50)
+    district = forms.ModelChoiceField(required=True,queryset=District.objects.all())
+    image = forms.ImageField(required=False)
+    shop_description = forms.CharField(max_length=1500,required=False)
+
+    class Meta:
+        model = Shop
+        fields = ['image','shop_description','district','name']
+
+    def save(self, commit = ...):
+        shop = super().save(commit)
+        
+        if commit:
+            shop.save()
+        return shop
+    
+class ForgotPasswordForm(forms.Form):
+    email = forms.EmailField(label="Email",required=True)
+
+    def clean(self):
+        cleaned_data = super().clean()
+
+        email = cleaned_data.get("email")
+
+        if not User.objects.filter(email = email).exists:
+
+            raise forms.ValidationError("Invalid email")
+        
+class ResetPasswordForm(forms.Form):
+    password = forms.CharField(max_length=20,label="New password",required=True)
+    confirm_password = forms.CharField(max_length=20,label="Confirm password",required=True)
+
+    def clean(self):
+        cleaned_data = super().clean()
+        password = cleaned_data.get('new_password')
+        cnfrm_password = cleaned_data.get('confirm_password')
+
+        if password and cnfrm_password and password != cnfrm_password:
+            raise forms.ValidationError("Password Doesn't match")

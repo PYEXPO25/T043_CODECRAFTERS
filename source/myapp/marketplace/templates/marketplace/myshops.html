@@ -65,11 +65,19 @@
                     
 
                     <div class="shop-buttons d-flex justify-content-between">
-                        <a href="#" class="btn btn-primary rounded-pill view">View Shop</a>
+                        <a href="{% url 'marketplace:shop' slug=shop.slug %}" class="btn btn-primary rounded-pill view">View Shop</a>
                         <a href="{% url 'marketplace:addproduct' shopname=shop.name %}" class="btn btn-success rounded-pill  add-product">Add Product</a>
                         <div class="shop-rating">
-                          <span class="stars" data-rating="{{ shop.rating }}"></span>
-                          <span class="rating-value">Rating:⭐⭐⭐⭐⭐({{ shop.rating }}/5)</span>
+                            <p><strong>Rating:</strong> 
+                                {% for i in "12345"|make_list %}
+                                    {% if forloop.counter <= shop.average_rating %}
+                                        ⭐
+                                    {% else %}
+                                        ☆
+                                    {% endif %}
+                                {% endfor %}
+                                ({{ shop.average_rating }}/5)
+                            </p>
                       </div>
                     </div>
                     
@@ -79,9 +87,13 @@
         {% empty %}
             <div class="no-shop">
                 <p>You don’t have a shop yet.</p>
-                <a href="#" class="btn btn-create">Create a New Shop</a>
             </div>
         {% endfor %}
+        <div class="d-flex justify-content-center pb-3">
+            <a href="{% url 'marketplace:addshop' %}" class="btn btn-secondary rounded-pill px-4 py-1">Create a New Shop</a>
+        </div>
+        
+        
     </div>
     {% include "marketplace/includes/footer.html" %}
 {% endblock content %}

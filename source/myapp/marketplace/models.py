@@ -4,7 +4,7 @@ import uuid
 from django.utils.text import slugify
 from django.core.validators import MinValueValidator, MaxValueValidator
 import random
-
+from django.db.models import Avg
 
 class District(models.Model):
     name = models.CharField(max_length=50, unique=True)
@@ -41,10 +41,7 @@ class VegetableImage(models.Model):
         return f"{self.vegetable.name} Image"
 
 
-from django.db import models
-from django.db.models import Avg
-import random
-from django.utils.text import slugify
+
 
 class Shop(models.Model):
     shop_owner = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -52,7 +49,7 @@ class Shop(models.Model):
     district = models.ForeignKey(District, on_delete=models.CASCADE)
     slug = models.SlugField(unique=True, max_length=100, blank=True)
     image = models.ImageField(upload_to="shop/image/", max_length=500)  
-    shop_description = models.TextField(null=True)
+    shop_description = models.CharField(null=True,max_length=1500)
 
     def __str__(self):
         return self.name

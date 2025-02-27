@@ -4,6 +4,13 @@
 
 {% block style %}
   <link rel="stylesheet" href="{% static "marketplace/search.css" %}" />
+  <style>
+    .card:hover {
+        transform: scale(1.05);
+        transition: transform 0.3s ease-in-out;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+  </style>
 {% endblock style %}
 
 {% block content %}
