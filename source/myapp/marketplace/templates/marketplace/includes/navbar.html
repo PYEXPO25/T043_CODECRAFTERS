@@ -55,19 +55,19 @@
                 </li>
                     <li class="nav-item">
                     <a class="nav-link btn btn-info text-white px-3 py-1 rounded-pill" href="{% url "marketplace:index" %}">
-                        Home
+                        <i class="fa-duotone fa-solid fa-house"></i> Home
                     </a>
                 </li>
                 {% csrf_token %}
                 {% if user.is_authenticated %}
                     <li class="nav-item">
                         <a class="nav-link btn btn-info text-white px-3 py-1 rounded-pill" href="{% url "marketplace:myshops" %}">
-                            My Shops
+                            <i class="fa-solid fa-shop"></i> My Shops
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link btn btn-info text-white px-3 py-1 rounded-pill" href="{% url "marketplace:myorders" %}">
-                            My orders
+                            <i class="fa-solid fa-cart-plus"></i> My orders
                         </a>
                     </li>
                     <li class="nav-item">

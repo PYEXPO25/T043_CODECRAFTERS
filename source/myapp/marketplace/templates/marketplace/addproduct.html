@@ -80,7 +80,7 @@
 
             <div class="form-group">
               <label for="quantity" class="form-label">
-                Quantity: 
+                Quantity <i class="fa-solid fa-scale-balanced"></i>: 
                 {% if form.quantity.errors %}
                   <span class="text-danger">{% for error in form.quantity.errors %}{{ error }}{% endfor %}</span>
                 {% endif %}
@@ -90,7 +90,7 @@
 
             <div class="form-group">
               <label for="price" class="form-label mt-2">
-                <i style="color:yellow;" class="fa-solid fa-sack-dollar"></i> Price (per unit): 
+                Price (per Kg) <i style="" class="fa-solid fa-sack-dollar"></i> : 
                 {% if form.price_per_kg.errors %}
                   <span class="text-danger">{% for error in form.price_per_kg.errors %}{{ error }}{% endfor %}</span>
                 {% endif %}
@@ -114,7 +114,7 @@
             </div>
             
             <div>
-              <button type="submit" class="btn btn-lg btn-primary my-3">Submit</button>
+              <button type="submit" class="btn btn-lg btn-success my-3">Add Product</button>
             </div>
           </form>
         </div>
