@@ -5,7 +5,12 @@
     <link rel="stylesheet" href="{% static 'marketplace/addshop.css' %}" />
 {% endblock style %}
 
+
+   
+
+
 {% block content %}
+{% include "marketplace/includes/navbar.html" %}
     <div id="regform" class="pb-2 text-white">
         <h1>Create Your Shop</h1>
         <form action="" method="POST" enctype="multipart/form-data">
@@ -64,7 +69,10 @@
                 {% endif %}
             </div>
 
-            <button class="mt-3 btn btn-lg" id="bt" type="submit">Create Shop</button>
+            <div class="text-center">
+                <button class="mt-3 btn btn-lg btn-success" id="bt" type="submit">Create Shop</button>
+            </div>
         </form>
     </div>
+    {% include "marketplace/includes/footer.html" %}
 {% endblock content %}

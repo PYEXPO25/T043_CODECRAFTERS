@@ -24,4 +24,5 @@ urlpatterns = [
     path('<slug:shopslug>/<slug:product>/payment/<int:amount>/<int:order_id>/', views.payment, name='payment'),
     path('<slug:shopslug>/<slug:product>/payment/<int:amount>/<int:order_id>/sucess', views.sucess, name='success'),
     path('cancel/<shopslug>/<product>/',views.cancel,name="cancel"),
+    path('<shopslug>/<product>/oderdetail',views.orderdetail,name="productorder"),
 ]

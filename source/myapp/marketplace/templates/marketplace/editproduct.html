@@ -2,14 +2,36 @@
 {% load static %}
 
 {% block style %}
-  <link rel="stylesheet" href="{% static "marketplace/editproduct.css" %}">
+  <link rel="stylesheet" href="{% static "marketplace/forms.css" %}" />
+  <style>
+    /* Center the form */
+    .form-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+    }
+
+    /* Style the form with a translucent background */
+    .form-box {
+        background: rgba(255, 255, 255, 0.2); /* Light translucent white */
+        padding: 30px;
+        border-radius: 10px;
+        backdrop-filter: blur(10px); /* Blurred background effect */
+        width: 100%;
+        max-width: 400px; /* Responsive size */
+    }
+  </style>
 {% endblock style %}
 
-{% block content %}
 
-  <body>
-    <div id="editform" class="pb-2 text-white">
-      <h1 style="color: darkgreen">Edit Product</h1>
+
+
+{% block content %}
+{% include "marketplace/includes/navbar.html" %}
+<div class="container form-container">
+    <div class="form-box">
+      <h1 class="text-center">Edit Product</h1>
       <form action="" method="POST">
         {% csrf_token %}
 
@@ -62,6 +84,7 @@
         </button>
       </form>
     </div>
-  </body>
-
+</div>
+{% include "marketplace/includes/messages.html" %}
 {% endblock content %}
+

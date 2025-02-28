@@ -124,9 +124,9 @@
     {% else %}
         <p class="text-muted">No reviews yet</p>
     {% endif %}
-    
+    {% if not request.user == shop.shop_owner %}
     <div class="container mt-4 review-form">
-    
+        
         <h5 class="text-center">Leave a Review</h5>
         <form method="POST" class="">
             {% csrf_token %}
@@ -142,8 +142,9 @@
                 <button type="submit" class="btn btn-warning fw-bold px-4">Submit Review</button>
             </div>
         </form>
-    
+        
 </div>
+{% endif %}
 </div>
 
 

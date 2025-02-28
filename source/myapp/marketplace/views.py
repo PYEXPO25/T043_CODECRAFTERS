@@ -145,7 +145,7 @@ def set_password(request, token):
             )
             
             Temp_user.delete()  
-            
+            messages.success(request,"Your password has been set, Now you can login")
             return redirect(reverse('marketplace:login')) 
 
     return render(request, 'marketplace/set_password.html', {'email': TempUser.email,'title':'Set Password','style':'forms'})
@@ -227,7 +227,7 @@ def addproduct(request,shopname):
             product.shop = shop
             product.shop_description = f"Buy this Fresh and high-quality {form.cleaned_data['category']} at {shop.name}."
             product.save()
-            messages.success(request,"Shop has been Created!")
+            messages.success(request,"Product has been Added!")
             return redirect(reverse('marketplace:shop', kwargs={'slug': shop.slug}))  # Change to your success URL
     vegetables = Vegetable.objects.all()
 
@@ -328,7 +328,7 @@ def resetpassword(request,uidb64,token):
                 user.set_password(new_pass)
                 user.save()
                 messages.success(request,"Your password has been successfully updated.")
-                return redirect(reverse('marketplace:index'))
+                return redirect(reverse('marketplace:login'))
             else:
                 messages.error(request,"Your redirect link has been expired")
 
@@ -351,19 +351,21 @@ def showproduct(request, shopslug, product):
                     return redirect(reverse('marketplace:login'))
 
                 quantity = form.cleaned_data['quantity']
-                amount = quantity * product.price_per_kg * 100  # Razorpay requires amount in paise
+                amount = quantity * product.price_per_kg * 100
                 
-                # Save order without updating product quantity
-                order = form.save(commit=False)
-                order.user = request.user
-                order.product = product
-                order.total_price = amount//100
-                order.shop = shop
-                order.is_paid = False  # New field to track payment status
-                order.save()
+                if quantity>product.quantity:
+                    messages.warning(request,"The product is out of stock")
+                else:
+                    order = form.save(commit=False)
+                    order.user = request.user
+                    order.product = product
+                    order.total_price = amount//100
+                    order.shop = shop
+                    order.is_paid = False  # New field to track payment status
+                    order.save()
 
-                # Redirect to payment
-                return redirect(reverse("marketplace:payment", kwargs={'shopslug': shop.slug, 'product': product.slug, "amount": int(amount), 'order_id': order.id}))
+                    # Redirect to payment
+                    return redirect(reverse("marketplace:payment", kwargs={'shopslug': shop.slug, 'product': product.slug, "amount": int(amount), 'order_id': order.id}))
 
 
         return render(request, 'marketplace/productdetail.html', {'shop': shop, 'product': product, 'form': form})
@@ -381,7 +383,7 @@ def payment(request,shopslug,product,amount,order_id):
 def sucess(request, shopslug, product, order_id,amount):
     order = get_object_or_404(Order, id=order_id, product__slug=product, shop__slug=shopslug)
 
-    if not order.is_paid:  # Check if order was already processed
+    if not order.is_paid: 
         order.is_paid = True
         order.save()
         
@@ -401,3 +403,7 @@ def cancel(request,shopslug,product):
     
     messages.warning(request,'Your payment has been canceled')
     return redirect(reverse('marketplace:showproduct',kwargs={"shopslug":shopslug,'product':product}))
+
+def orderdetail(request,shopslug,product):
+    orders = Order.objects.filter(product__slug=product)
+    return render(request,'marketplace/orderdetail.html',{"orders":orders})

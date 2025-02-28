@@ -8,7 +8,7 @@
 {% endblock style %}
 
 {% block content %}
-  
+{% include "marketplace/includes/navbar.html" %}
     <div class="container p-4" id="regform">
       <h1>Register</h1>
       <form action="" method="POST">
@@ -78,17 +78,17 @@
         <div class="text-center">
           
           <button class="mt-4 btn btn-success" type="submit" value="Submit">
-            Submit
+            Register
           </button>
         </div>
       </form>
       
-      {% include "marketplace/includes/messages.html" %}
+      
     </div>
     
     
     
     
-</html>
+    {% include "marketplace/includes/messages.html" %}
 
 {% endblock content %}

@@ -1,12 +1,16 @@
+{% autoescape off %}  
 
-{% autoescape off %}
+Subject: Reset Your Password  
 
- Hello {{name}}, 
+Dear {{ name }},  
 
-    This email is to redirect you to the password page.
+We received a request to reset your password. To proceed, please click the link below:  
 
-redirect url :
+[Reset Password](http://{{ domain }}{% url "marketplace:setpassword" token=token %})  
 
-    http://{{domain}}{% url "marketplace:setpassword"  token=token%}
-    
-{% endautoescape %}
+If you did not request this change, please ignore this email.  
+
+Best regards,  
+[Your Company Name]  
+
+{% endautoescape %}  

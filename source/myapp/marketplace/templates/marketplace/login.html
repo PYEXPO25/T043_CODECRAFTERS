@@ -1,26 +1,44 @@
-
 {% extends "marketplace/includes/base.html" %}
 {% load static %}
 
 {% block style %}
   <link rel="stylesheet" href="{% static "marketplace/forms.css" %}" />
+  <style>
+    /* Center the form */
+    .form-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+    }
+
+    /* Style the form with a translucent background */
+    .form-box {
+        background: rgba(255, 255, 255, 0.2); /* Light translucent white */
+        padding: 30px;
+        border-radius: 10px;
+        backdrop-filter: blur(10px); /* Blurred background effect */
+        width: 100%;
+        max-width: 400px; /* Responsive size */
+    }
+  </style>
 {% endblock style %}
 
 {% block content %}
-  
-    <div class="container p-4" id="regform">
-      <h1>Log in</h1>
+{% include "marketplace/includes/navbar.html" %}
+<div class="container form-container">
+    <div class="form-box">
+      <h1 class="text-center">Log in</h1>
       <form action="" method="POST">
         {% csrf_token %}
-        <div class="form-group">
-          
+        
         <div class="form-group">
             <label class="form-label" for="username">Enter your Username</label>
             {% if form.username.errors %}
             {% for error in form.username.errors %}
               <span class="text-danger">{{error}}</span>
             {% endfor %}
-          {% endif %}
+            {% endif %}
             <input
               class="form-control"
               type="text"
@@ -29,7 +47,9 @@
               value="{{form.username.value|default:""}}"
             />
         </div>
-        <label class="form-label" type='password' for="password">Enter your password</label>
+
+        <div class="form-group">
+          <label class="form-label" for="password">Enter your password</label>
           {% if form.password.errors %}
             {% for error in form.password.errors %}
               <span class="text-danger">{{error}}</span>
@@ -37,30 +57,25 @@
           {% endif %}
           <input
             class="form-control"
-            
             id="password"
             name="password"
-            type='password'
+            type="password"
           />
-          {% include "marketplace/includes/nonfeilderrors.html" %}
         </div>
-        <div>
-          <a href="{% url 'marketplace:forgotpassword' %}">Forget password?</a>
+
+        {% include "marketplace/includes/nonfeilderrors.html" %}
+        
+        <div >
+          <a href="{% url 'marketplace:forgotpassword' %}" class="text-decoration-none">Forgot password?</a>
         </div>
+
         <div class="text-center">
-          
-          <button class="mt-4 btn btn-success" type="submit" value="Submit">
-            Submit
+          <button class="mt-4 btn btn-success w-100" type="submit" value="Submit">
+            Log in
           </button>
         </div>
       </form>
-      
-      
     </div>
-    {% include "marketplace/includes/messages.html" %}
-    
-    
-    
-
-
+</div>
+{% include "marketplace/includes/messages.html" %}
 {% endblock content %}
