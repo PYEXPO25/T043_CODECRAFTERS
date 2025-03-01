@@ -31,8 +31,12 @@ class Command(BaseCommand):
     "vegetables/clustter_beans.jpg", "vegetables/raw_banana.jpg", "vegetables/Bitter_gourd.jpeg",
     "vegetables/Fengureek_seeds.webp"
 ]
+        lifespans = [
+    30, 4, 4, 7, 5, 10, 7, 5, 4, 7, 7, 7, 14, 30, 30, 5, 20, 7,  
+    20, 60, 3, 180, 3, 3, 180, 5, 3, 30, 10, 3, 3, 90, 5, 3, 3, 365  
+]
 
-        for vegetable,image in zip(vegetables,vegetable_images):
-            Vegetable.objects.create(name = vegetable,default_image = image)
+        for vegetable,image,lifespan in zip(vegetables,vegetable_images,lifespans):
+            Vegetable.objects.create(name = vegetable,default_image = image,lifespan=lifespan)
             
         self.stdout.write(self.style.SUCCESS("Successfully insereted."))

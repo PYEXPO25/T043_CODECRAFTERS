@@ -20,6 +20,7 @@ from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode,urlsafe_base64_decode
 import razorpay
 from django.views.decorators.csrf import csrf_exempt
+from datetime import timedelta,datetime
 # Create your views here.
 
 def index(request):
@@ -30,6 +31,10 @@ def index(request):
     
     shops = Shop.objects.filter()
     products = Product.objects.all()
+    for product in products:
+        if product.added_on - timedelta(days=product.category.lifespan) < datetime.now().date():
+            product.is_available = False
+
 
     paginator = Paginator(shops, 9)
     page_num = request.GET.get("page")

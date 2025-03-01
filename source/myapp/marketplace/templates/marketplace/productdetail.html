@@ -32,6 +32,7 @@
                 
                 <p><strong>Location:</strong> {{shop.district.name}}</p>
                 <p><strong>Available Quantity:</strong> {{product.quantity}} Kg</p>
+                <p><strong>Available Quantity:</strong> {{product.added_on}} </p>
                 
                 {% if shop.shop_owner == request.user %}
                 <div class="d-flex justify-content-center gap-3">

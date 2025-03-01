@@ -16,6 +16,7 @@ class District(models.Model):
 class Vegetable(models.Model):
     name = models.CharField(max_length=50, unique=True)
     default_image = models.ImageField(upload_to="vegetables/defaults/", null=True, blank=True)
+    lifespan = models.IntegerField(null=True,blank=True)
 
     @property
     def formated_image(self):
