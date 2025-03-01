@@ -37,6 +37,7 @@
         <h2 class="text-center mb-4">Featured Farmer Shops</h2>
         <div class="row">
             {% for shop in page_obj %}
+            {% comment %} {% if not shop.shop_owner == request.user %} {% endcomment %}
     <div class="col-md-4 p-3">
         <div class="card shadow">
             <img src="{{shop.formated_image}}" class="card-img-top" alt="Shop 1">
@@ -68,6 +69,7 @@
             </div>
         </div>
     </div>
+    {% comment %} {% endif %} {% endcomment %}
 {% empty %}
     <h2 class="text-center">No shops yet</h2>
 {% endfor %}

@@ -34,7 +34,14 @@
                 ({{ shop.average_rating }}/5)
             </p>
             <p>{{shop.shop_description}}</p>
-
+            {% if shop.shop_owner == request.user %}
+                        
+            <div class="d-flex justify-content-center">
+                <a href="{% url 'marketplace:addproduct' shopname=shop.name %}" class="btn btn-success rounded-pill add-product">
+                    Add Product <i class="fa-solid fa-square-plus"></i>
+                </a>
+            </div>
+            {% endif %}
             <div class=""></div>
             
         </div>

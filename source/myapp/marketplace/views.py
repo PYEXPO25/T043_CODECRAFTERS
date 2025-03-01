@@ -29,7 +29,8 @@ def index(request):
     if query:
         return redirect(f"{reverse('search_results')}?q={query}")
     
-    shops = Shop.objects.filter()
+    shops = Shop.objects.exclude(shop_owner=request.user)
+
     products = Product.objects.all()
     for product in products:
         if product.added_on - timedelta(days=product.category.lifespan) < datetime.now().date():
@@ -57,8 +58,8 @@ def search_results(request):
     selected_districts = request.GET.getlist('district')
     sort_option = request.GET.get('sort', 'price_low')
     
-    products = Product.objects.filter(is_available = True)
-    
+    products = Product.objects.filter(is_available = True)#
+
     if query:
         
         products = products.filter(
@@ -90,7 +91,8 @@ def search_results(request):
         'districts': districts,
         'selected_categories': selected_categories,
         'selected_districts': selected_districts,
-        'sort_option': sort_option
+        'sort_option': sort_option,
+        'title':'Search Page'
     })
 
 
@@ -129,7 +131,7 @@ def register(request):
                 print(e)
                 messages.warning(request, "Something went wrong. Try again.")
     
-    return render(request, 'marketplace/register.html', {'form': form,'title':'Register','style':'forms'})
+    return render(request, 'marketplace/register.html', {'form': form,'title':'Register','style':'forms','title':'Register'})
 
 
 def set_password(request, token):
@@ -153,7 +155,7 @@ def set_password(request, token):
             messages.success(request,"Your password has been set, Now you can login")
             return redirect(reverse('marketplace:login')) 
 
-    return render(request, 'marketplace/set_password.html', {'email': TempUser.email,'title':'Set Password','style':'forms'})
+    return render(request, 'marketplace/set_password.html', {'email': TempUser.email,'title':'Set Password','style':'forms','title':'Set Password'})
 
 
 def login_view(request):
@@ -171,7 +173,7 @@ def login_view(request):
                 login(request,user)
                 return redirect(reverse("marketplace:index"))
 
-    return render(request,"marketplace/login.html",{'title':'Login','form':form,'style':'forms'})
+    return render(request,"marketplace/login.html",{'title':'Login','form':form,'style':'forms','title':'Login'})
 
 def view_shop(request,slug):
     shop = Shop.objects.get(slug=slug)
@@ -198,7 +200,7 @@ def view_shop(request,slug):
             messages.error(request, "You need to be logged in to submit a review.")
             return redirect(reverse('marketplace:login'))
         return redirect(reverse('marketplace:shop',kwargs={'slug':slug}))
-    return render(request,"marketplace/viewshop.html",{'style':'viewshop','shop':shop,"page_obj":page_obj,'form':form})
+    return render(request,"marketplace/viewshop.html",{'style':'viewshop','shop':shop,"page_obj":page_obj,'form':form,'title':'Shop'})
 
 @login_required
 def logout_view(request):
@@ -214,7 +216,7 @@ def logout_view(request):
 @login_required
 def myshops(request):
     myshops = Shop.objects.filter(shop_owner = request.user)
-    return render(request,"marketplace/myshops.html",{"myshops":myshops})
+    return render(request,"marketplace/myshops.html",{"myshops":myshops,'title':'My shops'})
 
 @login_required
 def addproduct(request,shopname):
@@ -236,12 +238,12 @@ def addproduct(request,shopname):
             return redirect(reverse('marketplace:shop', kwargs={'slug': shop.slug}))  # Change to your success URL
     vegetables = Vegetable.objects.all()
 
-    return render(request,"marketplace/addproduct.html",{'vegetables':vegetables,'form':form})
+    return render(request,"marketplace/addproduct.html",{'vegetables':vegetables,'form':form,'title':'Add Product'})
 
 @login_required
 def myorders(request):
     orders = Order.objects.filter(user=request.user)
-    return render(request,"marketplace/myorders.html",{'orders':orders})
+    return render(request,"marketplace/myorders.html",{'orders':orders,'title':'My Orders'})
 
 def deleteproduct(request,productslug):
     product = Product.objects.get(slug=productslug)
@@ -261,7 +263,7 @@ def edit_product(request, shopslug, product):
     else:
         form = EditProductForm(instance=product)
 
-    return render(request, 'marketplace/editproduct.html', {'form': form, 'product': product})
+    return render(request, 'marketplace/editproduct.html', {'form': form, 'product': product,'title':'Edit Product'})
 
 @login_required
 def remove_product(request, shopslug, product):
@@ -284,7 +286,7 @@ def add_shop(request):
             shop.shop_owner = request.user
             shop.save()
             return redirect(reverse('marketplace:shop',kwargs={'slug':shop.slug}))
-    return render(request,"marketplace/addshop.html",{'districts':districts,"form":form})
+    return render(request,"marketplace/addshop.html",{'districts':districts,"form":form,'title':'Add shop'})
 
 def forgotpassword(request):
 
@@ -312,7 +314,7 @@ def forgotpassword(request):
                 
                 messages.warning(request,e)
                 
-    return render(request,"marketplace/forgetpassword.html",{'title':"Forgot Password","form":form})
+    return render(request,"marketplace/forgetpassword.html",{'title':"Forgot Password","form":form,'title':'Forget Password'})
 
 
 
@@ -337,7 +339,7 @@ def resetpassword(request,uidb64,token):
             else:
                 messages.error(request,"Your redirect link has been expired")
 
-    return render(request,"marketplace/set_password.html",{"title":"Reset password",'form':form})
+    return render(request,"marketplace/set_password.html",{"title":"Reset password",'form':form,'title':'Reset Password'})
 
 
 
@@ -373,7 +375,7 @@ def showproduct(request, shopslug, product):
                     return redirect(reverse("marketplace:payment", kwargs={'shopslug': shop.slug, 'product': product.slug, "amount": int(amount), 'order_id': order.id}))
 
 
-        return render(request, 'marketplace/productdetail.html', {'shop': shop, 'product': product, 'form': form})
+        return render(request, 'marketplace/productdetail.html', {'shop': shop, 'product': product, 'form': form,'title':'Show Product'})
     
     return redirect(reverse('marketplace:shop', kwargs={'slug': shop.slug}))
 
@@ -381,7 +383,7 @@ def payment(request,shopslug,product,amount,order_id):
     if request.method == 'POST':
         client = razorpay.Client(auth=('rzp_test_ZaxbrIIi7xfJQ5','TzfugBDqIED2MC0Wk9oXsWsA'))
         payment = client.order.create({"amount":amount,'currency':'INR','payment_capture':'1'})
-    return render(request,'marketplace/payment.html',{"amount":amount,'shopslug':shopslug,"product":product})
+    return render(request,'marketplace/payment.html',{"amount":amount,'shopslug':shopslug,"product":product,'title':'Payment'})
 
 
 @csrf_exempt
@@ -411,4 +413,4 @@ def cancel(request,shopslug,product):
 
 def orderdetail(request,shopslug,product):
     orders = Order.objects.filter(product__slug=product)
-    return render(request,'marketplace/orderdetail.html',{"orders":orders})
+    return render(request,'marketplace/orderdetail.html',{"orders":orders,'title':'Order Details'})
